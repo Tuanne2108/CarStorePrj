@@ -1,9 +1,10 @@
 import React, { Fragment } from "react";
-import styled from "styled-components";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes } from "./routes";
-import { Header } from "./components/HeaderCompo/Header";
 import { Default } from "./components/DefaultCompo/Default";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/header.scss'
+import 'boxicons'
 
 function App() {
     return (
