@@ -1,4 +1,36 @@
-
 .navbar{
+    width: 100%;
+    height: 80px;
     background-color: lightgrey;
+    padding: 0;
+    margin: 0;
 }
+.user{
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+}
+.myCart{
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+}
+.language{
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+}
+#brandDropdown{
+    display: flex;
+    align-items: center;
+    padding-left: 50px;
+}
+.input-group{
+    width: 50%;
+}
+img{
+    height: 70px;
+    width: 120px;
+    padding-left: 30px;
+}
+

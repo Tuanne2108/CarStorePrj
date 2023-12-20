@@ -4,18 +4,24 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import InputGroup from "react-bootstrap/InputGroup";
+import Button from "react-bootstrap/Button";
 
 export const Header = () => {
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid className="navbar">
-                <Navbar.Brand href="/">Navbar scroll</Navbar.Brand>
+                <Navbar.Brand href="/">
+                    <img src="https://st2.depositphotos.com/1051996/10703/v/950/depositphotos_107031528-stock-illustration-concept-design-of-a-super.jpg" alt="logo" />
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />
                 <Navbar.Collapse id="navbarScroll">
                     <Nav
-                        className="me-auto mb-3 mb-lg-0"
-                        style={{ maxHeight: "100px" }}
-                        navbarScroll>
+                        className="me-auto mb-2 mb-lg-0"
+                        style={{ maxHeight: "50px" }}
+                        navbarScroll
+                        id="brandDropdown">
+                        <box-icon type="solid" name="widget"></box-icon>
                         <NavDropdown title="Brand" id="navbarScrollingDropdown">
                             <NavDropdown.Item href="#action3">
                                 Action
@@ -28,23 +34,42 @@ export const Header = () => {
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
-                    <Form className="d-flex justify-content-center">
+                    <InputGroup className="mb">
                         <Form.Control
-                            type="search"
-                            placeholder="Search"
-                            className="me-2"
-                            aria-label="Search"
-                            style={{ width: "500px" }}  
+                            placeholder="Search product..."
+                            aria-label="Search products"
+                            aria-describedby="basic-addon2"
                         />
-                        <a href=""><box-icon name='search' size='md'></box-icon></a>
-                    </Form>
+                        <Button variant="outline-secondary" id="button-addon2">
+                            <a href="">
+                                <box-icon name="search" style={{marginTop: 5 + 'px'}}></box-icon>
+                            </a>
+                        </Button>
+                    </InputGroup>
                     <Nav
                         className="ms-auto mb-2 mb-lg-0"
                         style={{ maxHeight: "100px" }}
                         navbarScroll>
-                        <Nav.Link href="/order"><i class='bx bx-child'></i>My Cart</Nav.Link>
-                        <Nav.Link href="/user">User</Nav.Link>
-                        <Nav.Link href="#">Language</Nav.Link>
+                        <div className="myCart">
+                            <box-icon type="solid" name="cart"></box-icon>
+                            <div>
+                                <Nav.Link href="/order">My Cart</Nav.Link>
+                            </div>
+                        </div>
+                        <div className="user">
+                            <box-icon type="solid" name="user"></box-icon>
+                            <Nav.Link href="/user">
+                                <span>Login/Logout</span>
+                                <div>
+                                    <span>Account</span>
+                                </div>
+                            </Nav.Link>
+                        </div>
+                        <div className="language">
+                            <Nav.Link href="#">
+                                <box-icon name="globe"></box-icon>
+                            </Nav.Link>
+                        </div>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

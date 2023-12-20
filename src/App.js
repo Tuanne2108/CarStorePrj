@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/header.scss'
 import 'boxicons'
 
+
 function App() {
     return (
         <div>
