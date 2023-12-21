@@ -12,7 +12,7 @@ export const Header = () => {
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid className="navbar">
                 <Navbar.Brand href="/">
-                    <img src="https://st2.depositphotos.com/1051996/10703/v/950/depositphotos_107031528-stock-illustration-concept-design-of-a-super.jpg" alt="logo" />
+                    <img className="logoBrand" src="https://st2.depositphotos.com/1051996/10703/v/950/depositphotos_107031528-stock-illustration-concept-design-of-a-super.jpg" alt="logo" />
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />
                 <Navbar.Collapse id="navbarScroll">
