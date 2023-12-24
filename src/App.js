@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes } from "./routes";
-import { Default } from "./components/DefaultCompo/Default";
+import { Default } from "./components/Default";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/header.scss'
 import 'boxicons'

@@ -1,5 +1,5 @@
 import React from "react";
-import { Header } from "../HeaderCompo/Header";
+import { Header } from "./Header";
 
 
 export const Default = ({children}) => {

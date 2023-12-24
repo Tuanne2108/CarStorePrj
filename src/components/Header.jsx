@@ -6,7 +6,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
-import logo from "../../assets/images/brandLogo.svg"
+import logo from "../assets/images/brandLogo.svg"
 
 export const Header = () => {
     return (
