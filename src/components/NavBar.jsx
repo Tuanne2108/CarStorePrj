@@ -7,7 +7,9 @@ export const NavBar = () => {
         switch (type) {
             case "text":
                 return options.map((option, index) => (
-                    <div key={index}>{option}</div>
+                    <div key={index}>
+                        <a href="">{option} </a>
+                    </div>
                 ));
             case "checkbox":
                 return (
@@ -29,34 +31,34 @@ export const NavBar = () => {
                     return (
                         <div>
                             <Rate disabled defaultValue={option} />
-                            <span style={{marginLeft:'7px'}}>From {option} star</span>
+                            <span style={{ marginLeft: "7px" }}>
+                                From {option} star
+                            </span>
                         </div>
                     );
                 });
             case "price":
-                return options.map((option)=>{
-                    return (
-                        <div className="priceRange">
-                            {option}
-                        </div>
-                    )
-                })
+                return options.map((option) => {
+                    return <div className="priceRange">{option}</div>;
+                });
             default:
                 return {};
         }
     };
 
     return (
-        <div className="productCategory">
-            <h4>Categories</h4>
-            {renderContent("text", [
-                "THERMAL INSULATION FILM",
-                "CERAMIC COATING",
-                "RUST-PROOF UNDERCOVER",
-                "CAR GLASS CARE",
-                "CAR BODY CARE",
-            ])}
-            {renderContent("checkbox", [
+        <div className="productNavigation">
+            <div className="productCategory">
+                <h4>Categories</h4>
+                {renderContent("text", [
+                    "THERMAL INSULATION FILM",
+                    "CERAMIC COATING",
+                    "RUST-PROOF UNDERCOVER",
+                    "CAR GLASS CARE",
+                    "CAR BODY CARE",
+                ])}
+            </div>
+            {/* {renderContent("checkbox", [
                 {
                     label: "A",
                     value: "abc",
@@ -67,7 +69,7 @@ export const NavBar = () => {
                 },
             ])}
             {renderContent("rating", [5, 4, 3])}
-            {renderContent("price", ['From $10-$100', 'From $100-$1000', 'Greater than $1000'])}
+            {renderContent("price", ['From $10-$100', 'From $100-$1000', 'Greater than $1000'])} */}
         </div>
     );
 };

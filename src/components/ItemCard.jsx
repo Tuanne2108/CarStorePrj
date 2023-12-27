@@ -7,7 +7,7 @@ const ItemCard = () => {
     return (
         <div className="cardContainer">
             <Row xs={1} md={3} className="g-4">
-                {Array.from({ length: 1 }).map((_, idx) => (
+                {Array.from({ length: 10 }).map((_, idx) => (
                     <Col key={idx}>
                         <Card style={{ width: "20rem" }}>
                             <div className="badgeContainer">

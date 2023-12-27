@@ -6,7 +6,8 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
-import logo from "../assets/images/brandLogo.svg"
+import logo from "../assets/images/brandLogo.svg";
+import { Badge } from "antd";
 
 export const Header = () => {
     return (
@@ -43,7 +44,9 @@ export const Header = () => {
                         />
                         <Button variant="outline-secondary" id="button-addon2">
                             <a href="">
-                                <box-icon name="search" style={{marginTop: 5 + 'px'}}></box-icon>
+                                <box-icon
+                                    name="search"
+                                    style={{ marginTop: 5 + "px" }}></box-icon>
                             </a>
                         </Button>
                     </InputGroup>
@@ -52,10 +55,14 @@ export const Header = () => {
                         style={{ maxHeight: "100px" }}
                         navbarScroll>
                         <div className="myCart">
-                            <box-icon type="solid" name="cart"></box-icon>
-                            <div>
-                                <Nav.Link href="/order">My Cart</Nav.Link>
-                            </div>
+                            <a href="/order">
+                                <Badge count={5} size="small">
+                                    <box-icon
+                                        type="solid"
+                                        name="cart"></box-icon>
+                                </Badge>
+                                <div>My Cart</div>
+                            </a>
                         </div>
                         <div className="user">
                             <box-icon type="solid" name="user"></box-icon>

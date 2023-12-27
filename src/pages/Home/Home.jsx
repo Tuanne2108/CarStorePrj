@@ -9,6 +9,7 @@ import img4 from "../../assets/images/img4.jpg";
 import img5 from "../../assets/images/img5.jpg";
 import img6 from "../../assets/images/img6.webp";
 import { NavBar } from "../../components/NavBar";
+import { Button } from "react-bootstrap";
 
 export const Home = () => {
     const arr = [
@@ -20,21 +21,34 @@ export const Home = () => {
     ];
     return (
         <>
-            <div style={{ padding: "0 100px" }}>
+            <div style={{ padding: "0 100px", background:'#f8f5f5'}}>
                 <div className="productType">
                     {arr.map((item) => {
                         return <ProductType name={item} key={item} />;
                     })}
                 </div>
+
+                <div className="slider">
+                    <ImageSlider
+                        arrImgs={[img1, img2, img3, img4, img5, img6]}
+                    />
+                </div>
+                <div className="productCard">
+                    <ItemCard />
+                </div>
             </div>
-            <div className="slider">
-                <ImageSlider arrImgs={[img1, img2, img3, img4, img5, img6]} />
-            </div>
-            <div className="productCard">
-                <ItemCard />
-            </div>
-            <div>
+            {/* <div>
                 <NavBar/>
+            </div> */}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    paddingTop: "20px",
+                }}>
+                <Button style={{ width: "150px" }} variant="outline-primary">
+                    See more...
+                </Button>
             </div>
         </>
     );
