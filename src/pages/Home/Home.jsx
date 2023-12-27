@@ -8,7 +8,6 @@ import img3 from "../../assets/images/img3.png";
 import img4 from "../../assets/images/img4.jpg";
 import img5 from "../../assets/images/img5.jpg";
 import img6 from "../../assets/images/img6.webp";
-import { NavBar } from "../../components/NavBar";
 import { Button } from "react-bootstrap";
 
 export const Home = () => {

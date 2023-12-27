@@ -58,6 +58,13 @@ a{
     height: 50px;
     padding-left: 16px ;
 }
+.buyBtn .btn{
+    background-color: #ffffff;
+    border-color: #ff8000;
+}
+.buyBtn .btn:hover{
+    background-color: #ff8000;
+}
 .slider img{
     height: 500px;
 }
@@ -71,9 +78,10 @@ a{
 }
 .cardContainer{
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     margin-top: 20px;
     flex-wrap: wrap;
+    flex-basis: unset;
 }
 .cardContainer img{
     height: 300px;
@@ -124,4 +132,19 @@ a{
     width: fit-content;
     border-radius: 6px;
     padding: 5px;
+}
+.priceWrapper{
+    display: flex;
+    gap: 20px;
+    font-size: 20px;
+}
+.product-quantity{
+    display: flex;
+}
+.product-quantity Button{
+    width: fit-content;
+    height: fit-content;
+    border-radius: 0px;
+    background-color: #e0e0e0;
+    border-color: #e0e0e0;
 }

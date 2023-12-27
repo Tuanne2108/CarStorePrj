@@ -44,7 +44,7 @@ const ItemCard = () => {
                                     </div>
                                 </Card.Text>
                                 <div className="buyBtn text-end">
-                                    <Button style={{ backgroundColor: "#ff8000", borderColor: "#ff8000" }}>
+                                    <Button>
                                         <a href="">Add to cart</a>
                                     </Button>
                                 </div>
