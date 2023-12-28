@@ -55,13 +55,12 @@ export const ProductDetail = () => {
                                 <box-icon name="minus" size="xs"></box-icon>
                             </Button>
                             <InputNumber
-                                min={1}
-                                max={10}
                                 defaultValue={3}
+                                min={1}
                                 onChange={onChange}
                                 style={{
                                     height: "37.33px",
-                                    width: "50px",
+                                    width: "40px",
                                     borderRadius: "0px",
                                 }}
                             />

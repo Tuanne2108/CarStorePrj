@@ -1,13 +1,18 @@
-*{
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+* {
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+        "Lucida Sans", Arial, sans-serif;
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
 }
-a{
+a {
     text-decoration: none;
     color: black;
 }
-.navbar{
+:root{
+    --dark-orange: #cc6600
+}
+.navbar {
     width: 100%;
     height: 80px;
     background-color: lightgrey;
@@ -15,40 +20,40 @@ a{
     padding: 0;
     margin: 0;
 }
-.user{
+.user {
     display: flex;
     align-items: center;
     padding-right: 10px;
     white-space: nowrap;
 }
-.myCart{
+.myCart {
     display: flex;
     align-items: center;
     padding-right: 10px;
 }
-.myCart a{
+.myCart a {
     display: flex;
     gap: 5px;
 }
-.language{
+.language {
     display: flex;
     align-items: center;
     padding-right: 10px;
 }
-#brandDropdown{
+#brandDropdown {
     display: flex;
     align-items: center;
     padding-left: 50px;
 }
-.input-group{
+.input-group {
     width: 50%;
 }
-.logoBrand{
+.logoBrand {
     height: 70px;
     width: 120px;
     padding-left: 30px;
 }
-.productType{
+.productType {
     display: flex;
     align-items: center;
     gap: 20px;
@@ -56,38 +61,38 @@ a{
     background-color: rgb(240, 233, 224);
     border-bottom: 2px solid brown;
     height: 50px;
-    padding-left: 16px ;
+    padding-left: 16px;
 }
-.buyBtn .btn{
+.buyBtn .btn {
     background-color: #ffffff;
-    border-color: #ff8000;
+    border-color: var(--dark-orange);
 }
-.buyBtn .btn:hover{
-    background-color: #ff8000;
+.buyBtn .btn:hover {
+    background-color: var(--dark-orange);
 }
-.slider img{
+.slider img {
     height: 500px;
 }
-.slider{
+.slider {
     max-width: 100%;
     padding: 10px 200px 0 200px;
     background-color: #f8f5f5;
 }
-.slick-dots{
-    bottom:20px;
+.slick-dots {
+    bottom: 20px;
 }
-.cardContainer{
+.cardContainer {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
     flex-wrap: wrap;
     flex-basis: unset;
 }
-.cardContainer img{
+.cardContainer img {
     height: 300px;
     width: 300px;
 }
-.badgeContainer{
+.badgeContainer {
     background-color: antiquewhite;
     border-radius: 50%;
     position: relative;
@@ -97,9 +102,9 @@ a{
     height: 70px;
     top: 10px;
     left: 10px;
-    color:red
+    color: red;
 }
-.onSale{
+.onSale {
     position: absolute;
     left: 12px;
     bottom: 12px;
@@ -109,7 +114,7 @@ a{
     justify-content: center;
     align-items: center;
 }
-.productCategory{
+.productCategory {
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -121,30 +126,151 @@ a{
     text-wrap: nowrap;
     margin-left: -30px;
 }
-.productCategory h4{
-    color: #cc6600;
+.productCategory h4 {
+    color: var(--dark-orange);
     display: flex;
     justify-content: center;
-    border-bottom: #994c00 2px solid;
+    border-bottom: var(--dark-orange) 2px solid;
 }
-.priceRange{
+.priceRange {
     background-color: rgb(240, 239, 237);
     width: fit-content;
     border-radius: 6px;
     padding: 5px;
 }
-.priceWrapper{
+.priceWrapper {
     display: flex;
     gap: 20px;
     font-size: 20px;
 }
-.product-quantity{
+.product-quantity {
     display: flex;
 }
-.product-quantity Button{
+.product-quantity Button {
     width: fit-content;
     height: fit-content;
     border-radius: 0px;
     background-color: #e0e0e0;
     border-color: #e0e0e0;
+}
+.ant-input-number-handler-wrap {
+    display: none !important;
+}
+.signIn {
+    background-image: url("../assets/images/bg.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+.wrapper{
+    position: relative;
+    width: 400px;
+    height: 440px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.wrapper .form-box{
+    width: 100%;
+    padding: 40px;
+}
+.form-box h2{
+    font-size: 2em;
+    color: var(--dark-orange);
+    text-align: center;
+}
+.input-box{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    border-bottom: 2px solid var(--dark-orange);
+    margin: 30px 0;
+}
+.input-box label{
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    font-size: 1em;
+    color: var(--dark-orange);
+    font-weight: 500;
+    pointer-events: none;
+    transition: .5s;
+}
+.input-box input:focus~label,
+.input-box input:valid~label{
+    top: -5px;
+}
+.input-box input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    color: var(--dark-orange);
+    font-weight: 600;
+    padding: 0 35px 0 5px;
+}
+.input-box box-icon{
+    position: absolute;
+    right: 8px;
+    font-size: 1.2rem;
+    color: var(--dark-orange);
+    line-height: 57px;
+}
+.remember-me{
+    font-size: .9em;
+    color: var(--dark-orange);
+    font-weight: 500;
+    margin: -15px 0 15px;
+    display: flex;
+    justify-content: space-between;
+}
+.remember-me label input{
+    accent-color: var(--dark-orange);
+    margin-right: 3px;
+}
+.remember-me a{
+    color: var(--dark-orange) !important;
+}
+.remember-me a:hover{
+    text-decoration: underline !important;
+}
+.btn-sign-in Button{
+    width: 100%;
+    height: 45px;
+    background: var(--dark-orange);
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #ffffff;
+    font-weight: 500;
+}
+.btn-sign-in Button:hover{
+    background-color: #994c00;
+}
+.signUp{
+    font-size: .9em;
+    color: var(--dark-orange);
+    text-align: center;
+    font-weight: 500;
+    margin: 25px 0 10px;
+}
+.signUp p a{
+    color: var(--dark-orange);
+    font-weight: 600;
+}
+.signUp p a:hover{
+    text-decoration: underline;
 }

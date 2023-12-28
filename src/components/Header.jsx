@@ -66,8 +66,8 @@ export const Header = () => {
                         </div>
                         <div className="user">
                             <box-icon type="solid" name="user"></box-icon>
-                            <Nav.Link href="/user">
-                                <span>Login/Logout</span>
+                            <Nav.Link href="/sign-in">
+                                <span>Sign In/Sign Up</span>
                                 <div>
                                     <span>Account</span>
                                 </div>
