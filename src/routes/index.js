@@ -4,7 +4,6 @@ import { Products } from "../pages/Products/Products";
 import { NotFound } from "../pages/NotFound";
 import { ProductTypePage } from "../pages/Products/ProductTypePage";
 import { SignIn } from "../pages/User/SignIn";
-import { SignUp } from "../pages/User/SignUp";
 import { ProductDetail } from "../pages/Products/ProductDetail";
 
 export const routes = [
@@ -31,11 +30,6 @@ export const routes = [
     {
         path: "/sign-in",
         page: SignIn,
-        showHeader: false,
-    },
-    {
-        path: "/sign-up",
-        page: SignUp,
         showHeader: false,
     },
     {

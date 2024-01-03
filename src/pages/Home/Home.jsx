@@ -8,6 +8,7 @@ import img3 from "../../assets/images/img3.png";
 import img4 from "../../assets/images/img4.jpg";
 import img5 from "../../assets/images/img5.jpg";
 import img6 from "../../assets/images/img6.webp";
+import img7 from "../../assets/images/img7.jpg"
 import { Button } from "react-bootstrap";
 
 export const Home = () => {
@@ -29,7 +30,7 @@ export const Home = () => {
 
                 <div className="slider">
                     <ImageSlider
-                        arrImgs={[img1, img2, img3, img4, img5, img6]}
+                        arrImgs={[img1, img2, img3, img4, img5, img6, img7]}
                     />
                 </div>
                 <div className="productCard">
