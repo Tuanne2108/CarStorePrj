@@ -201,7 +201,7 @@ a {
     transform: translateX(400px);
 }
 .wrapper.active {
-    height: 520px;
+    height: 550px;
 }
 .wrapper.active .form-box.login {
     transition: none;
@@ -233,6 +233,7 @@ a {
     font-weight: 500;
     pointer-events: none;
     transition: 0.5s;
+    overflow: none;
 }
 .input-box input:focus ~ label,
 .input-box input:valid ~ label {
@@ -253,6 +254,12 @@ a {
     position: absolute;
     right: 8px;
     font-size: 1.2rem;
+    line-height: 57px;
+}
+.input-box #visible-toggle{
+    position: absolute;
+    right: 8px;
+    font-size: 1rem;
     color: var(--dark-orange);
     line-height: 57px;
 }

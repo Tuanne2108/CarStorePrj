@@ -15,7 +15,7 @@ const ImageSlider = ({ arrImgs }) => {
         <Slider {...settings}>
             {arrImgs.map((image)=>{
                 return(
-                    <img src={image} alt="car image" />
+                    <img key={{}} src={image} alt="car image" />
                 )
             })}
         </Slider>
