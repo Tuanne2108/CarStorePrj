@@ -163,7 +163,7 @@ a {
 .ant-input-number-handler-wrap {
     display: none !important;
 }
-.signIn {
+.signIn, .signUp {
     background-image: url("../assets/images/bg.jpg");
     background-size: cover;
     background-position: center;
@@ -175,7 +175,7 @@ a {
 .wrapper {
     position: relative;
     width: 400px;
-    height: 440px;
+    height: fit-content;
     background: transparent;
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
@@ -184,32 +184,10 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: height .2s ease;
-    overflow: hidden;
 }
 .wrapper .form-box {
     width: 100%;
-    padding: 40px;
-}
-.wrapper .form-box.login {
-    transition: transform 0.18s ease;
-    transform: translateX(0);
-}
-.wrapper .form-box.register {
-    position: absolute;
-    transition: none;
-    transform: translateX(400px);
-}
-.wrapper.active {
-    height: 550px;
-}
-.wrapper.active .form-box.login {
-    transition: none;
-    transform: translateX(-400px);
-}
-.wrapper.active .form-box.register {
-    transition: transform 0.18s ease;
-    transform: translateX(0);
+    padding: 25px;
 }
 .form-box h2 {
     font-size: 2em;
@@ -302,11 +280,14 @@ a {
     text-align: center;
     font-weight: 500;
     margin: 25px 0 10px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
 }
-.login-register p a {
+.login-register a {
     color: var(--dark-orange);
     font-weight: 600;
 }
-.login-register p a:hover {
+.login-register a:hover {
     text-decoration: underline;
 }

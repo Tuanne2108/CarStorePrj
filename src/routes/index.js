@@ -3,8 +3,9 @@ import { Order } from "../pages/Order/Order";
 import { Products } from "../pages/Products/Products";
 import { NotFound } from "../pages/NotFound";
 import { ProductTypePage } from "../pages/Products/ProductTypePage";
-import { SignIn } from "../pages/User/SignIn";
 import { ProductDetail } from "../pages/Products/ProductDetail";
+import SignInForm from "../pages/User/SignIn";
+import SignUpForm from "../pages/User/SignUp";
 
 export const routes = [
     {
@@ -29,7 +30,12 @@ export const routes = [
     },
     {
         path: "/sign-in",
-        page: SignIn,
+        page: SignInForm,
+        showHeader: false,
+    },
+    {
+        path: "/sign-up",
+        page: SignUpForm,
         showHeader: false,
     },
     {
