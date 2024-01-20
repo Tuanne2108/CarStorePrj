@@ -1,10 +1,14 @@
-import React from "react";
-import { Spin } from "antd";
-export const Loading = ({ children, isLoading, delay=200}) => {
+import { Spinner } from "react-bootstrap";
+
+export const Loading = () => {
     return (
-        <Spin spinning={isLoading} delay={delay} >
-            {children}
-        </Spin>
+        <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            variant="warning"
+            aria-hidden="true"
+        />
     );
 };
-

@@ -1,19 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { MutationHook } from "../../hooks/mutationHook";
 import * as UserService from "../../services/UserService";
 import { Loading } from "../../components/Loading";
+import { useMutationHooks } from "../../hooks/userMutationHook";
+import { useNavigate } from "react-router-dom";
+import * as message from "../../components/Message";
 
 const SignUpForm = () => {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const handleTogglePassword = () => {
         setShowPassword(!showPassword);
+    };
+    const handleToggleConfirmPassword = () => {
+        setShowConfirmPassword(!showConfirmPassword);
     };
     const handleSignupUsernameChange = (e) => {
         setName(e.target.value);
@@ -31,23 +38,43 @@ const SignUpForm = () => {
         setConfirmPassword(e.target.value);
     };
 
-    const signUpMutation = MutationHook((data) => UserService.signUpUser(data));
-    const { data, isLoading=false } = signUpMutation;
+    const mutation = useMutationHooks((newUser) =>
+        UserService.signUpUser(newUser)
+    );
 
-    const handleSignUp = () => {
-        signUpMutation.mutate({
-            name,
-            email,
-            password,
-            confirmPassword,
-        });
+    const { data, isPending, isError, isSuccess } = mutation;
+    console.log("mutation", mutation);
+    const handleSignUp = async () => {
+        if (!name || !email || !password || !confirmPassword) {
+            message.error("Please fill in all required fields.");
+            return;
+        }
+        try {
+            const response = await mutation.mutateAsync({
+                name,
+                email,
+                password,
+                confirmPassword,
+            });
+
+            if (response.status === "ERR") {
+                message.error(response.message);
+            } else {
+                message.success();
+                navigate("/sign-in");
+            }
+        } catch (error) {
+            message.error(
+                "An error occurred during sign up. Please try again later."
+            );
+        }
     };
+
     return (
         <div className="signUp">
             <div className="wrapper">
                 <div className="form-box register">
                     <h2>Registration</h2>
-                    <form action="#">
                         <div className="input-box">
                             <span>
                                 <box-icon
@@ -97,7 +124,7 @@ const SignUpForm = () => {
                         </div>
                         <div className="input-box">
                             <input
-                                type={showPassword ? "text" : "password"}
+                                type={showConfirmPassword ? "text" : "password"}
                                 value={confirmPassword}
                                 onChange={handleSignupConfirmPasswordChange}
                                 required
@@ -105,10 +132,12 @@ const SignUpForm = () => {
                             <label>Confirm Password</label>
                             <span
                                 className="toggle-password"
-                                onClick={handleTogglePassword}
+                                onClick={handleToggleConfirmPassword}
                                 id="visible-toggle">
                                 <FontAwesomeIcon
-                                    icon={showPassword ? faEye : faEyeSlash}
+                                    icon={
+                                        showConfirmPassword ? faEye : faEyeSlash
+                                    }
                                 />
                             </span>
                         </div>
@@ -118,17 +147,10 @@ const SignUpForm = () => {
                                 and conditions
                             </label>
                         </div>
-                        {data?.status === "ERR" && (
-                            <span style={{ color: "red", fontSize:'14px'}}>
-                                {data?.message}
-                            </span>
-                        )}
-                        <div className="btn-sign-in">
-                            <Loading isLoading={isLoading}>
-                                <Button type="submit" onClick={handleSignUp}>
-                                    Register
-                                </Button>
-                            </Loading>
+                        <div type="submit" className="btn-sign-in">
+                            <Button onClick={handleSignUp}>
+                                {isPending ? <Loading /> : "Register"}
+                            </Button>
                         </div>
                         <div className="login-register">
                             <span>Already have an account?</span>
@@ -136,7 +158,6 @@ const SignUpForm = () => {
                                 Login
                             </a>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
