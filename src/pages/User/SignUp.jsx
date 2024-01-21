@@ -42,7 +42,7 @@ const SignUpForm = () => {
         UserService.signUpUser(newUser)
     );
 
-    const { data, isPending, isError, isSuccess } = mutation;
+    const { isPending } = mutation;
     console.log("mutation", mutation);
     const handleSignUp = async () => {
         if (!name || !email || !password || !confirmPassword) {

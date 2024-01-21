@@ -8,8 +8,10 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import logo from "../assets/images/brandLogo.svg";
 import { Badge } from "antd";
+import { useSelector } from "react-redux";
 
 export const Header = () => {
+    const user = useSelector((state) => state.user);
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid className="navbar">
@@ -65,13 +67,19 @@ export const Header = () => {
                             </a>
                         </div>
                         <div className="user">
-                            <box-icon type="solid" name="user"></box-icon>
-                            <Nav.Link href="/sign-in">
-                                <span>Sign In/Sign Up</span>
-                                <div>
-                                    <span>Account</span>
+                            {user?.name ? (
+                                <div style={{ cursor: "pointer", display:'flex', gap:'5px'}}>
+                                    <box-icon type='solid' name='user-circle'></box-icon>
+                                    <span>{user.name}</span>
                                 </div>
-                            </Nav.Link>
+                            ) : (
+                                <Nav.Link href="/sign-in" style={{display:"flex", gap:'5px'}}>
+                                    <box-icon
+                                        type="solid"
+                                        name="user"></box-icon>
+                                    <span>Sign In/Sign Up</span>
+                                </Nav.Link>
+                            )}
                         </div>
                         <div className="language">
                             <Nav.Link href="#">
