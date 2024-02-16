@@ -46,7 +46,7 @@ export const SignInForm = () => {
             } else {
                 message.success();
                 navigate("/");
-                localStorage.setItem("access_token", response?.access_token);
+                localStorage.setItem("access_token", JSON.stringify(response?.access_token));
                 const decoded = jwtDecode(response?.access_token);
                 console.log("decode", decoded);
                 if (decoded?.id) {

@@ -291,3 +291,12 @@ a {
 .login-register a:hover {
     text-decoration: underline;
 }
+.popover-option{
+    padding: 5px;
+    font-size: 16px;
+}
+.popover-option:hover {
+    cursor: pointer;
+    background-color: #cc6600;
+    border-radius: 5px;
+}

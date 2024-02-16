@@ -1,22 +1,34 @@
 import axios from "axios";
+export const axiosJwt = axios.create()
 
 export const signInUser = async (data) => {
-    const res = await axios.post(`http://localhost:3001/user/log-in`, data);
+    const res = await axios.post(`http://localhost:3000/user/log-in`, data);
     return res.data;
 };
 
 export const signUpUser = async (data) => {
-    const res = await axios.post(`http://localhost:3001/user/log-up`, data);
+    const res = await axios.post(`http://localhost:3000/user/log-up`, data);
+    return res.data;
+};
+export const getUserDetails = async (id, access_token) => {
+    const res = await axiosJwt.get(
+        `http://localhost:3000/user/get-user-details/${id}`,
+        {
+            headers: {
+                token: `Bearer ${access_token}`,
+            },
+        }
+    );
+    return res.data;
+};
+export const refreshToken = async () => {
+    const res = await axios.post(`http://localhost:3000/user/refresh-token`, {
+        withCredentials: true,
+    });
     return res.data;
 };
 
-export const getUserDetails = async (id, access_token) => {
-    const res = await axios.get(
-        `http://localhost:3001/user/get-user-details/${id}`,{
-            headers:{
-                token:`Beare ${access_token}`
-            }
-        }
-    );
+export const logOutUser = async () => {
+    const res = await axios.post(`http://localhost:3000/user/logout`);
     return res.data;
 };

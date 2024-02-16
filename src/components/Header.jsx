@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
@@ -9,9 +9,27 @@ import Button from "react-bootstrap/Button";
 import logo from "../assets/images/brandLogo.svg";
 import { Badge } from "antd";
 import { useSelector } from "react-redux";
+import { Popover, Space } from "antd";
+import * as UserService from "../services/UserService";
+import { useDispatch } from "react-redux";
+import { resetUser } from "../redux/slides/userSlice";
+
 
 export const Header = () => {
     const user = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const handleLogout = async () => {
+        await UserService.logOutUser();
+        dispatch(resetUser());
+    };
+    const content = (
+        <div>
+            <p className="popover-option" onClick={handleLogout}>
+                Log out
+            </p>
+            <p className="popover-option">User Information</p>
+        </div>
+    );
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid className="navbar">
@@ -67,19 +85,34 @@ export const Header = () => {
                             </a>
                         </div>
                         <div className="user">
-                            {user?.name ? (
-                                <div style={{ cursor: "pointer", display:'flex', gap:'5px'}}>
-                                    <box-icon type='solid' name='user-circle'></box-icon>
-                                    <span>{user.name}</span>
-                                </div>
-                            ) : (
-                                <Nav.Link href="/sign-in" style={{display:"flex", gap:'5px'}}>
-                                    <box-icon
-                                        type="solid"
-                                        name="user"></box-icon>
-                                    <span>Sign In/Sign Up</span>
-                                </Nav.Link>
-                            )}
+                                {user?.name ? (
+                                    <Space wrap>
+                                        <Popover
+                                            content={content}
+                                            trigger="click">
+                                            <div
+                                                style={{
+                                                    cursor: "pointer",
+                                                    display: "flex",
+                                                    gap: "5px",
+                                                }}>
+                                                <box-icon
+                                                    type="solid"
+                                                    name="user-circle"></box-icon>
+                                                <span>{user.name}</span>
+                                            </div>
+                                        </Popover>
+                                    </Space>
+                                ) : (
+                                    <Nav.Link
+                                        href="/sign-in"
+                                        style={{ display: "flex", gap: "5px" }}>
+                                        <box-icon
+                                            type="solid"
+                                            name="user"></box-icon>
+                                        <span>Sign In/Sign Up</span>
+                                    </Nav.Link>
+                                )}
                         </div>
                         <div className="language">
                             <Nav.Link href="#">
