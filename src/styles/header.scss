@@ -297,6 +297,27 @@ a {
 }
 .popover-option:hover {
     cursor: pointer;
-    background-color: #cc6600;
+    color: var(--dark-orange);
+}
+.user-info{
+    padding: 20px 0 0px 120px;
+}
+.input-form{
+    display: flex;
+    flex-direction: column;
+    width: 700px;
+    border: #cc6600 1px solid;
+    margin: 0 auto;
+    padding: 20px;
     border-radius: 5px;
+}
+.input-group{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.form-label{
+    font-weight: 600;
+    width: 80px;
+    text-align: left;
 }

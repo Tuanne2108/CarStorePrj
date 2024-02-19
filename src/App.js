@@ -25,7 +25,6 @@ function App() {
         return res.data;
     };
     const query = useQuery({ queryKey: ["App"], queryFn: fetchApi });
-    console.log("query", query);
 
     useEffect(() => {
         const { storageData, decoded } = handleDecoded();
@@ -45,19 +44,26 @@ function App() {
     };
 
     UserService.axiosJwt.interceptors.request.use(
-        async (config) => {
-            let currentTime = new Date();
-            const { decoded } = handleDecoded();
-            if (decoded?.exp < currentTime.getTime() / 1000) {
-                const data = await UserService.refreshToken();
-                config.headers["token"] = `Bearer ${data?.access_token}`;
-            }
-            return config;
+        (config) => {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    let currentTime = new Date();
+                    const { decoded } = handleDecoded();
+                    if (decoded?.exp < currentTime.getTime() / 1000) {
+                        const data = await UserService.refreshToken();
+                        config.headers["token"] = `Bearer ${data?.access_token}`;
+                    }
+                    resolve(config);
+                } catch (error) {
+                    reject(error);
+                }
+            });
         },
         (error) => {
             return Promise.reject(error);
         }
     );
+    
 
     const handleGetUserDetails = async (id, token) => {
         const res = await UserService.getUserDetails(id, token);

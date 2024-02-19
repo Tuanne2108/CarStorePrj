@@ -13,21 +13,27 @@ import { Popover, Space } from "antd";
 import * as UserService from "../services/UserService";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../redux/slides/userSlice";
-
+import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
     const user = useSelector((state) => state.user);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleLogout = async () => {
         await UserService.logOutUser();
         dispatch(resetUser());
+    };
+    const handleUserInfo = async () => {
+        navigate("/user-detail");
     };
     const content = (
         <div>
             <p className="popover-option" onClick={handleLogout}>
                 Log out
             </p>
-            <p className="popover-option">User Information</p>
+            <p className="popover-option" onClick={handleUserInfo}>
+                User Information
+            </p>
         </div>
     );
     return (
@@ -58,6 +64,7 @@ export const Header = () => {
                     </Nav>
                     <InputGroup className="mb">
                         <Form.Control
+                            id="search"
                             placeholder="Search product..."
                             aria-label="Search products"
                             aria-describedby="basic-addon2"
@@ -85,34 +92,32 @@ export const Header = () => {
                             </a>
                         </div>
                         <div className="user">
-                                {user?.name ? (
-                                    <Space wrap>
-                                        <Popover
-                                            content={content}
-                                            trigger="click">
-                                            <div
-                                                style={{
-                                                    cursor: "pointer",
-                                                    display: "flex",
-                                                    gap: "5px",
-                                                }}>
-                                                <box-icon
-                                                    type="solid"
-                                                    name="user-circle"></box-icon>
-                                                <span>{user.name}</span>
-                                            </div>
-                                        </Popover>
-                                    </Space>
-                                ) : (
-                                    <Nav.Link
-                                        href="/sign-in"
-                                        style={{ display: "flex", gap: "5px" }}>
-                                        <box-icon
-                                            type="solid"
-                                            name="user"></box-icon>
-                                        <span>Sign In/Sign Up</span>
-                                    </Nav.Link>
-                                )}
+                            {user?.name ? (
+                                <Space wrap>
+                                    <Popover content={content} trigger="click">
+                                        <div
+                                            style={{
+                                                cursor: "pointer",
+                                                display: "flex",
+                                                gap: "5px",
+                                            }}>
+                                            <box-icon
+                                                type="solid"
+                                                name="user-circle"></box-icon>
+                                            <span>{user.name}</span>
+                                        </div>
+                                    </Popover>
+                                </Space>
+                            ) : (
+                                <Nav.Link
+                                    href="/sign-in"
+                                    style={{ display: "flex", gap: "5px" }}>
+                                    <box-icon
+                                        type="solid"
+                                        name="user"></box-icon>
+                                    <span>Sign In/Sign Up</span>
+                                </Nav.Link>
+                            )}
                         </div>
                         <div className="language">
                             <Nav.Link href="#">

@@ -32,3 +32,8 @@ export const logOutUser = async () => {
     const res = await axios.post(`http://localhost:3000/user/logout`);
     return res.data;
 };
+
+export const updateUser = async (id, data) => {
+    const res = await axios.put(`http://localhost:3000/user/update-user/${id}`);
+    return res.data;
+};
