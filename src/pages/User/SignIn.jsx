@@ -33,7 +33,6 @@ export const SignInForm = () => {
         UserService.signInUser(data)
     );
     const { isPending } = signInMutation;
-
     const handleSignIn = async () => {
         try {
             const response = await signInMutation.mutateAsync({
@@ -62,7 +61,6 @@ export const SignInForm = () => {
     const handleGetUserDetails = async (id, token) => {
         const res = await UserService.getUserDetails(id, token);
         dispatch(updateUser({...res?.data, access_token:token}))
-
     };
     return (
         <div className="signIn">

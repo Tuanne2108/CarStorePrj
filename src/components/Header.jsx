@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 export const Header = () => {
     const user = useSelector((state) => state.user);
     const navigate = useNavigate();
+    const [username, setUsername] = useState('')
     const dispatch = useDispatch();
     const handleLogout = async () => {
         await UserService.logOutUser();
@@ -26,6 +27,9 @@ export const Header = () => {
     const handleUserInfo = async () => {
         navigate("/user-detail");
     };
+    useEffect(()=>{
+        setUsername(user?.name)
+    }, [user?.name])
     const content = (
         <div>
             <p className="popover-option" onClick={handleLogout}>
