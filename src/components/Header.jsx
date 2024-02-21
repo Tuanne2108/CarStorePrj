@@ -18,7 +18,8 @@ import { useNavigate } from "react-router-dom";
 export const Header = () => {
     const user = useSelector((state) => state.user);
     const navigate = useNavigate();
-    const [username, setUsername] = useState('')
+    const [username, setUsername] = useState("");
+    const [userAvatar, setUserAvatar] = useState("");
     const dispatch = useDispatch();
     const handleLogout = async () => {
         await UserService.logOutUser();
@@ -27,9 +28,10 @@ export const Header = () => {
     const handleUserInfo = async () => {
         navigate("/user-detail");
     };
-    useEffect(()=>{
-        setUsername(user?.name)
-    }, [user?.name])
+    useEffect(() => {
+        setUsername(user?.name);
+        setUserAvatar(user?.avatar);
+    }, [user?.name, user?.avatar]);
     const content = (
         <div>
             <p className="popover-option" onClick={handleLogout}>
@@ -105,10 +107,19 @@ export const Header = () => {
                                                 display: "flex",
                                                 gap: "5px",
                                             }}>
-                                            <box-icon
-                                                type="solid"
-                                                name="user-circle"></box-icon>
-                                            <span>{user.name}</span>
+                                            {userAvatar ? (
+                                                <img src={userAvatar} alt="avatar" style={{
+                                                    height:'40px',
+                                                    width:'40px',
+                                                    borderRadius:'50%',
+                                                    objectFit:'cover'
+                                                }}/>
+                                            ) : (
+                                                <box-icon
+                                                    type="solid"
+                                                    name="user-circle"></box-icon>
+                                            )}
+                                            <span style={{lineHeight:'40px'}}>{user.name}</span>
                                         </div>
                                     </Popover>
                                 </Space>

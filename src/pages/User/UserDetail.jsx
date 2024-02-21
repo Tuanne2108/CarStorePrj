@@ -8,6 +8,9 @@ import * as message from "../../components/Message";
 import { Loading } from "../../components/Loading";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../../redux/slides/userSlice";
+import { Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { getBase64 } from "../../utils";
 
 export const UserDetail = () => {
     const user = useSelector((state) => state.user);
@@ -55,9 +58,14 @@ export const UserDetail = () => {
     const handleAddressChange = (e) => {
         setAddress(e.target.value);
     };
-    const handleAvatarChange = (e) => {
-        setAvatar(e.target.value);
+    const handleAvatarChange = async ({ fileList }) => {
+        const file = fileList[0];
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+        setAvatar(file.preview);
     };
+
     const handleUpdate = () => {
         updateUserMutation.mutate({
             id: user?.id,
@@ -118,13 +126,23 @@ export const UserDetail = () => {
                         aria-describedby="basic-addon1"
                     />
                 </InputGroup>
-                <Form.Group controlId="formFile" className="mb-3">
+                <Form.Group className="mb-3">
                     <Form.Label>Avatar</Form.Label>
-                    <Form.Control
-                        type="file"
-                        value={avatar}
-                        onChange={handleAvatarChange}
-                    />
+                    <Upload onChange={handleAvatarChange} maxCount={1}>
+                        <Button icon={<UploadOutlined />}>Upload file</Button>
+                    </Upload>
+                    {avatar && (
+                        <img
+                            src={avatar}
+                            style={{
+                                height: "60px",
+                                width: "60px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                            }}
+                            alt="avatar"
+                        />
+                    )}
                 </Form.Group>
                 <div className="text-end">
                     <Button
