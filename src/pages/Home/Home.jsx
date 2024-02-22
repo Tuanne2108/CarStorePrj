@@ -8,8 +8,10 @@ import img3 from "../../assets/images/img3.png";
 import img4 from "../../assets/images/img4.jpg";
 import img5 from "../../assets/images/img5.jpg";
 import img6 from "../../assets/images/img6.webp";
-import img7 from "../../assets/images/img7.jpg"
-import { Button } from "react-bootstrap";
+import img7 from "../../assets/images/img7.jpg";
+import { Button, Col, Row } from "react-bootstrap";
+import * as ProductService from "../../services/ProductService";
+import { useQuery } from "@tanstack/react-query";
 
 export const Home = () => {
     const arr = [
@@ -19,9 +21,20 @@ export const Home = () => {
         "CAR GLASS CARE",
         "CAR BODY CARE",
     ];
+    const fetchProductAll = async () => {
+        const res = await ProductService.getAllProduct();
+        return res;
+    };
+    const { isLoading, data: products } = useQuery({
+        queryKey: ["product"],
+        queryFn: fetchProductAll,
+        retry: 3,
+        retryDelay: 1000,
+    });
+    console.log("data", products);
     return (
         <>
-            <div style={{ padding: "0 100px", background:'#f8f5f5'}}>
+            <div style={{ padding: "0 100px", background: "#f8f5f5" }}>
                 <div className="productType">
                     {arr.map((item) => {
                         return <ProductType name={item} key={item} />;
@@ -34,7 +47,22 @@ export const Home = () => {
                     />
                 </div>
                 <div className="productCard">
-                    <ItemCard />
+                    <Row xs={1} md={3} className="g-4">
+                        {products?.data?.map((product) => (
+                            <Col key={product._id}>
+                                <ItemCard
+                                    countInStock={product.countInStock}
+                                    image={product.image}
+                                    name={product.name}
+                                    price={product.price}
+                                    rating={product.rating}
+                                    type={product.type}
+                                    discount={product.discount}
+                                    sold={product.sold}
+                                />
+                            </Col>
+                        ))}
+                    </Row>
                 </div>
             </div>
             {/* <div>

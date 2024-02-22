@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes } from "./routes";
 import { Default } from "./components/Default";
@@ -10,21 +10,13 @@ import { useQuery } from "@tanstack/react-query";
 import { isJsonString } from "./utils";
 import { jwtDecode } from "jwt-decode";
 import * as UserService from "./services/UserService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./redux/slides/userSlice";
 
 function App() {
     const dispatch = useDispatch();
-    useEffect(() => {
-        fetchApi();
-    }, []);
-    const fetchApi = async () => {
-        const res = await axios.get(
-            `http://localhost:3001/product/get-all-product`
-        );
-        return res.data;
-    };
-    const query = useQuery({ queryKey: ["App"], queryFn: fetchApi });
+    const user = useSelector((state) => state.user);
+
 
     useEffect(() => {
         const { storageData, decoded } = handleDecoded();
@@ -76,11 +68,12 @@ function App() {
                 <Routes>
                     {routes.map((route) => {
                         const Page = route.page;
+                        const isCheckAuth = !route.isPrivate || user.isAdmin
                         const Layout = route.showHeader ? Default : Fragment;
                         return (
                             <Route
-                                key={{}}
-                                path={route.path}
+                                key={route.path}
+                                path={isCheckAuth ? route.path : "/login"}
                                 element={
                                     <Layout>
                                         <Page />

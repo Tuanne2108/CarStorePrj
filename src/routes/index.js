@@ -7,6 +7,7 @@ import { ProductDetail } from "../pages/Products/ProductDetail";
 import SignInForm from "../pages/User/SignIn";
 import SignUpForm from "../pages/User/SignUp";
 import UserDetail from "../pages/User/UserDetail";
+import { AdminPage } from "../pages/Admin/AdminPage";
 
 export const routes = [
     {
@@ -48,6 +49,12 @@ export const routes = [
         path: "/user-detail",
         page: UserDetail,
         showHeader: true,
+    },
+    {
+        path: "/system/admin",
+        page: AdminPage,
+        showHeader: false,
+        isPrivate: true,
     },
     {
         path: "*",
