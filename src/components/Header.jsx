@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import { resetUser } from "../redux/slides/userSlice";
 import { useNavigate } from "react-router-dom";
 
-export const Header = () => {
+export const Header = ({ isHidden = false }) => {
     const user = useSelector((state) => state.user);
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
@@ -28,17 +28,25 @@ export const Header = () => {
     const handleUserInfo = async () => {
         navigate("/user-detail");
     };
+    const handleAdminSystem = async () => {
+        navigate("/system/admin");
+    };
     useEffect(() => {
         setUsername(user?.name);
         setUserAvatar(user?.avatar);
     }, [user?.name, user?.avatar]);
     const content = (
         <div>
-            <p className="popover-option" onClick={handleLogout}>
-                Log out
-            </p>
             <p className="popover-option" onClick={handleUserInfo}>
                 User Information
+            </p>
+            {user?.isAdmin && (
+                <p className="popover-option" onClick={handleAdminSystem}>
+                    System Management
+                </p>
+            )}
+            <p className="popover-option" onClick={handleLogout}>
+                Log out
             </p>
         </div>
     );
@@ -48,55 +56,71 @@ export const Header = () => {
                 <Navbar.Brand href="/">
                     <img className="logoBrand" src={logo} alt="logo" />
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="navbarScroll" />
+                {!isHidden && <Navbar.Toggle aria-controls="navbarScroll" />}
                 <Navbar.Collapse id="navbarScroll">
                     <Nav
                         className="me-auto mb-2 mb-lg-0"
                         style={{ maxHeight: "50px" }}
                         navbarScroll
                         id="brandDropdown">
-                        <box-icon type="solid" name="widget"></box-icon>
-                        <NavDropdown title="Brand" id="navbarScrollingDropdown">
-                            <NavDropdown.Item href="#action3">
-                                Action
-                            </NavDropdown.Item>
-                            <NavDropdown.Item href="#action4">
-                                Another action
-                            </NavDropdown.Item>
-                            <NavDropdown.Item href="#action5">
-                                Something else here
-                            </NavDropdown.Item>
-                        </NavDropdown>
+                        {isHidden ? (
+                            <></> 
+                        ) : (
+                            <>
+                                <box-icon type="solid" name="widget"></box-icon>
+                                <NavDropdown
+                                    title="Brand"
+                                    id="navbarScrollingDropdown">
+                                    <NavDropdown.Item href="#action3">
+                                        Action
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item href="#action4">
+                                        Another action
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item href="#action5">
+                                        Something else here
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            </>
+                        )}
                     </Nav>
-                    <InputGroup className="mb">
-                        <Form.Control
-                            id="search"
-                            placeholder="Search product..."
-                            aria-label="Search products"
-                            aria-describedby="basic-addon2"
-                        />
-                        <Button variant="outline-secondary" id="button-addon2">
-                            <a href="">
-                                <box-icon
-                                    name="search"
-                                    style={{ marginTop: 5 + "px" }}></box-icon>
-                            </a>
-                        </Button>
-                    </InputGroup>
+                    {!isHidden && (
+                        <InputGroup className="mb">
+                            <Form.Control
+                                id="search"
+                                placeholder="Search product..."
+                                aria-label="Search products"
+                                aria-describedby="basic-addon2"
+                            />
+                            <Button
+                                variant="outline-secondary"
+                                id="button-addon2">
+                                <a href="">
+                                    <box-icon
+                                        name="search"
+                                        style={{
+                                            marginTop: 5 + "px",
+                                        }}></box-icon>
+                                </a>
+                            </Button>
+                        </InputGroup>
+                    )}
                     <Nav
                         className="ms-auto mb-2 mb-lg-0"
                         style={{ maxHeight: "100px" }}
                         navbarScroll>
-                        <div className="myCart">
-                            <a href="/order">
-                                <Badge count={5} size="small">
-                                    <box-icon
-                                        type="solid"
-                                        name="cart"></box-icon>
-                                </Badge>
-                                <div>My Cart</div>
-                            </a>
-                        </div>
+                        {!isHidden && (
+                            <div className="myCart">
+                                <a href="/order">
+                                    <Badge count={5} size="small">
+                                        <box-icon
+                                            type="solid"
+                                            name="cart"></box-icon>
+                                    </Badge>
+                                    <div>My Cart</div>
+                                </a>
+                            </div>
+                        )}
                         <div className="user">
                             {user?.name ? (
                                 <Space wrap>
@@ -108,18 +132,25 @@ export const Header = () => {
                                                 gap: "5px",
                                             }}>
                                             {userAvatar ? (
-                                                <img src={userAvatar} alt="avatar" style={{
-                                                    height:'40px',
-                                                    width:'40px',
-                                                    borderRadius:'50%',
-                                                    objectFit:'cover'
-                                                }}/>
+                                                <img
+                                                    src={userAvatar}
+                                                    alt="avatar"
+                                                    style={{
+                                                        height: "40px",
+                                                        width: "40px",
+                                                        borderRadius: "50%",
+                                                        objectFit: "cover",
+                                                    }}
+                                                />
                                             ) : (
                                                 <box-icon
                                                     type="solid"
                                                     name="user-circle"></box-icon>
                                             )}
-                                            <span style={{lineHeight:'40px'}}>{user.name}</span>
+                                            <span
+                                                style={{ lineHeight: "40px" }}>
+                                                {user.name}
+                                            </span>
                                         </div>
                                     </Popover>
                                 </Space>
