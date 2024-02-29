@@ -6,3 +6,7 @@ export const getAllProduct = async () => {
     );
     return res.data;
 };
+export const addProduct = async (data) => {
+    const res = await axios.post(`http://localhost:3001/product/create`, data);
+    return res.data;
+};
