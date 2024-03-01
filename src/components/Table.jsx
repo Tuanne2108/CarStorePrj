@@ -1,46 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { Table } from "antd";
-const columns = [
-    {
-        title: "Name",
-        dataIndex: "name",
-        render: (text) => <a>{text}</a>,
-    },
-    {
-        title: "Age",
-        dataIndex: "age",
-    },
-    {
-        title: "Address",
-        dataIndex: "address",
-    },
-    {
-        title: "Action",
-        key: "action",
-    },
-];
-const data = [
-    {
-        key: "1",
-        name: "John Brown",
-        age: 32,
-        address: "New York No. 1 Lake Park",
-    },
-    {
-        key: "2",
-        name: "Jim Green",
-        age: 42,
-        address: "London No. 1 Lake Park",
-    },
-    {
-        key: "3",
-        name: "Joe Black",
-        age: 32,
-        address: "Sydney No. 1 Lake Park",
-    },
-];
+import { Loading } from "./Loading";
 
-const TableComponent = () => {
+const TableComponent = (props) => {
+    const {
+        selectionType = "checkbox",
+        isLoading = false,
+        columns = [],
+        data = [],
+    } = props;
+
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
             console.log(
@@ -50,15 +19,17 @@ const TableComponent = () => {
             );
         },
     };
-    const [selectionType, setSelectionType] = useState("checkbox");
+
     return (
-        <>
-            <div
-                style={{
-                    marginTop: "15px",
-                    border: "1px solid #c0c0c0",
-                    width: "100vh",
-                }}>
+        <div
+            style={{
+                marginTop: "15px",
+                border: "1px solid #c0c0c0",
+                width: "100vh",
+            }}>
+            {isLoading ? (
+                <Loading />
+            ) : (
                 <Table
                     rowSelection={{
                         type: selectionType,
@@ -67,9 +38,9 @@ const TableComponent = () => {
                     columns={columns}
                     dataSource={data}
                 />
-            </div>
-        </>
+            )}
+        </div>
     );
 };
 
-export default TableComponent
+export default TableComponent;

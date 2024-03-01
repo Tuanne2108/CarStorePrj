@@ -25,7 +25,7 @@ export const Home = () => {
         const res = await ProductService.getAllProduct();
         return res;
     };
-    const { isLoading, data: products } = useQuery({
+    const { data: products } = useQuery({
         queryKey: ["product"],
         queryFn: fetchProductAll,
         retry: 3,

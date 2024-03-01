@@ -13,6 +13,8 @@ import { useMutationHooks } from "../../hooks/userMutationHook";
 import * as ProductService from "../../services/ProductService";
 import { Loading } from "../Loading";
 import * as message from "../../components/Message";
+import { useQuery } from "@tanstack/react-query";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 export const ProductManage = () => {
     const [show, setShow] = useState(false);
@@ -64,9 +66,13 @@ export const ProductManage = () => {
         });
         return res;
     });
-    const { isPending, isSuccess, isError } = mutation;
+    const fetchProductAll = async () => {
+        const res = await ProductService.getAllProduct();
+        return res;
+    };
+    const { isPending, isSuccess, isError, data } = mutation;
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccess && data?.status === "OK") {
             message.success();
             setShow(false);
         } else if (isError) {
@@ -84,6 +90,53 @@ export const ProductManage = () => {
         setShow(false);
     };
     const handleShow = () => setShow(true);
+    //Table
+    const renderAction = () => {
+        return (
+            <div style={{ display: "flex", gap: "15px" }}>
+                <EditOutlined style={{ fontSize: "20px", cursor: "pointer" }} />
+                <DeleteOutlined
+                    style={{
+                        color: "red",
+                        fontSize: "20px",
+                        cursor: "pointer",
+                    }}
+                />
+            </div>
+        );
+    };
+    const { isLoading: isLoadingProducts, data: products } = useQuery({
+        queryKey: ["products"],
+        queryFn: fetchProductAll,
+    });
+    const columns = [
+        {
+            title: "Name",
+            dataIndex: "name",
+        },
+        {
+            title: "Type",
+            dataIndex: "type",
+        },
+        {
+            title: "Price",
+            dataIndex: "price",
+        },
+        {
+            title: "Action",
+            dataIndex: "action",
+            render: renderAction,
+        },
+    ];
+    const dataTable =
+        products?.data?.length &&
+        products?.data?.map((product) => {
+            return {
+                ...product,
+                key: product._id,
+            };
+        });
+
     return (
         <>
             <h3>Product Management</h3>
@@ -100,7 +153,12 @@ export const ProductManage = () => {
                 </Button>
             </div>
             <div>
-                <TableComponent />
+                <TableComponent
+                    products={products?.data}
+                    isLoading={isLoadingProducts}
+                    columns={columns}
+                    data={dataTable}
+                />
             </div>
             <div>
                 <Modal show={show} onHide={handleClose}>
