@@ -18,11 +18,13 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import DrawerComponent from "../Drawer";
 
+
 export const ProductManage = () => {
     const [show, setShow] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
     const [rowSelected, setRowSelected] = useState("");
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
-    const user = useSelector((state) => state.user);
+    const user = useSelector((state) => state?.user);
     const [isPendingUpdate, setIsPendingUpdate] = useState(false);
     const initProductState = {
         name: "",
@@ -34,9 +36,20 @@ export const ProductManage = () => {
         discount: "",
         image: "",
     };
+    const initProductDetailState = {
+        name: "",
+        type: "",
+        description: "",
+        price: "",
+        rating: "",
+        countInStock: "",
+        discount: "",
+        image: "",
+    };
     const [stateProduct, setStateProduct] = useState(initProductState);
-    const [stateProductDetails, setStateProductDetails] =
-        useState(initProductState);
+    const [stateProductDetails, setStateProductDetails] = useState(
+        initProductDetailState
+    );
     const handleOnChange = (e) => {
         setStateProduct({
             ...stateProduct,
@@ -64,7 +77,7 @@ export const ProductManage = () => {
         }
         setStateProductDetails({ ...stateProductDetails, image: file.preview });
     };
-    console.log('rowSelect', rowSelected)
+
     const mutation = useMutationHooks((data) => {
         const {
             name,
@@ -89,15 +102,16 @@ export const ProductManage = () => {
         return res;
     });
     const updateMutation = useMutationHooks((data) => {
-        const { _id, token, ...rests } = data;
-        console.log('data', data)
-        const res = ProductService.updateProduct({
-            _id,
-            token,
-            rests,
-        });
+        const { id, token, ...rests } = data;
+
+        const res = ProductService.updateProduct(id, token, { ...rests });
         return res;
     });
+    const deleteMutation = useMutationHooks((data)=>{
+        const { id, token } = data;
+        const res = ProductService.deleteProduct(id, token);
+        return res
+    })
     const fetchProductAll = async () => {
         const res = await ProductService.getAllProduct();
         return res;
@@ -109,6 +123,12 @@ export const ProductManage = () => {
         isSuccess: isSuccessUpdated,
         isError: isErrorUpdated,
     } = updateMutation;
+    const {
+        data: dataDeleted,
+        isPending: isPendingDeleted,
+        isSuccess: isSuccessDeleted,
+        isError: isErrorDeleted,
+    } = deleteMutation;
     useEffect(() => {
         if (isSuccess && data?.status === "OK") {
             message.success();
@@ -120,40 +140,61 @@ export const ProductManage = () => {
     useEffect(() => {
         if (isSuccessUpdated && dataUpdated?.status === "OK") {
             message.success();
-            handleCloseDrawer()
+            handleCloseDrawer();
         } else if (isErrorUpdated) {
             message.error();
         }
-    }, [isSuccess, isError]);
+    }, [isSuccessUpdated, isErrorUpdated]);
+    useEffect(() => {
+        if (isSuccessDeleted && dataDeleted?.status === "OK") {
+            message.success();
+            handleCloseDelete();
+        } else if (isErrorDeleted) {
+            message.error();
+        }
+    }, [isSuccessDeleted, isErrorDeleted]);
     const handleCloseDrawer = () => {
         setIsOpenDrawer(false);
-        setStateProductDetails({
-            name: "",
-            type: "",
-            description: "",
-            price: "",
-            rating: "",
-            countInStock: "",
-            discount: "",
-            image: "",
-        });
     };
     const onFinish = () => {
-        mutation.mutate(stateProduct);
-    };
-    const onFinishUpdate = () => {
-        updateMutation.mutate({
-            _id: rowSelected,
-            token: user?.access_token,
-            stateProductDetails,
+        mutation.mutate(stateProduct, {
+            onSettled: () => {
+                queryProduct.refetch();
+            },
         });
     };
+    const onFinishUpdate = () => {
+        updateMutation.mutate(
+            {
+                id: rowSelected,
+                token: user?.access_token,
+                ...stateProductDetails,
+            },
+            {
+                onSettled: () => {
+                    queryProduct.refetch();
+                },
+            }
+        );
+        setIsOpenDrawer(false);
+    };
+    const onFinishDelete = ()=>{
+        deleteMutation.mutate({id :rowSelected ,token:user?.access_token}, {
+            onSettled: () => {
+                queryProduct.refetch();
+            },
+        });
+        setShowDelete(false)
+    }
     const resetProductState = () => {
         setStateProduct(initProductState);
     };
     const handleClose = () => {
         resetProductState();
         setShow(false);
+    };
+    const handleCloseDelete = () => {
+        setShowDelete(false);
     };
     const handleShow = () => setShow(true);
     //Table
@@ -176,17 +217,17 @@ export const ProductManage = () => {
     useEffect(() => {
         setStateProduct(stateProductDetails);
     }, [stateProductDetails]);
-    // useEffect(() => {
-    //     if (rowSelected) {
-    //         fetchProductDetails(rowSelected);
-    //     }
-    // }, [rowSelected]);
-    const handleUpdateDetails = () => {
+    useEffect(() => {
         if (rowSelected) {
             setIsPendingUpdate(true);
             fetchProductDetails(rowSelected);
         }
+    }, [rowSelected]);
+    const handleUpdateDetails = () => {
         setIsOpenDrawer(true);
+    };
+    const handleDelete = () => {
+        setShowDelete(true);
     };
     const renderAction = () => {
         return (
@@ -201,14 +242,16 @@ export const ProductManage = () => {
                         fontSize: "20px",
                         cursor: "pointer",
                     }}
+                    onClick={handleDelete}
                 />
             </div>
         );
     };
-    const { isLoading: isLoadingProducts, data: products } = useQuery({
+    const queryProduct = useQuery({
         queryKey: ["products"],
         queryFn: fetchProductAll,
     });
+    const { isLoading: isLoadingProducts, data: products } = queryProduct;
     const columns = [
         {
             title: "Name",
@@ -451,7 +494,7 @@ export const ProductManage = () => {
                     isOpen={isOpenDrawer}
                     onClose={() => setIsOpenDrawer(false)}>
                     <Modal.Body style={{ paddingLeft: "100px" }}>
-                        {isPendingUpdate ? (
+                        {isPendingUpdate || isPendingUpdated ? (
                             <Loading />
                         ) : (
                             <Form>
@@ -625,6 +668,30 @@ export const ProductManage = () => {
                     </Modal.Footer>
                 </DrawerComponent>
             </div>
+            {/* delete modal */}
+            <>
+                return (
+                <div style={{ display: "block", position: "initial" }}>
+                    <Modal show={showDelete} onHide={handleCloseDelete}>
+                        <Modal.Body>
+                            <p>
+                                Are you sure to delele this? This action cannot
+                                be undone.
+                            </p>
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                            <Button variant="danger" onClick={onFinishDelete}>Delete</Button>
+                            <Button
+                                variant="secondary"
+                                onClick={handleCloseDelete}>
+                                Cancel
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                </div>
+                );
+            </>
         </>
     );
 };
