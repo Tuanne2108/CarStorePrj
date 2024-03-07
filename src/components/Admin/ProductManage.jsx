@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Pagination } from "react-bootstrap";
 import { PlusOutlined } from "@ant-design/icons";
 import TableComponent from "../Table";
 import Modal from "react-bootstrap/Modal";
@@ -17,7 +17,6 @@ import { useQuery } from "@tanstack/react-query";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import DrawerComponent from "../Drawer";
-
 
 export const ProductManage = () => {
     const [show, setShow] = useState(false);
@@ -64,18 +63,26 @@ export const ProductManage = () => {
     };
 
     const handleImageChange = async ({ fileList }) => {
-        const file = fileList[0];
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj);
+        if (fileList.length > 0) {
+            const file = fileList[0];
+            if (!file.url && !file.preview) {
+                file.preview = await getBase64(file.originFileObj);
+            }
+            setStateProduct({ ...stateProduct, image: file.preview });
         }
-        setStateProduct({ ...stateProduct, image: file.preview });
     };
+
     const handleDetailImageChange = async ({ fileList }) => {
-        const file = fileList[0];
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj);
+        if (fileList.length > 0) {
+            const file = fileList[0];
+            if (!file.url && !file.preview) {
+                file.preview = await getBase64(file.originFileObj);
+            }
+            setStateProductDetails({
+                ...stateProductDetails,
+                image: file.preview,
+            });
         }
-        setStateProductDetails({ ...stateProductDetails, image: file.preview });
     };
 
     const mutation = useMutationHooks((data) => {
@@ -107,11 +114,11 @@ export const ProductManage = () => {
         const res = ProductService.updateProduct(id, token, { ...rests });
         return res;
     });
-    const deleteMutation = useMutationHooks((data)=>{
+    const deleteMutation = useMutationHooks((data) => {
         const { id, token } = data;
         const res = ProductService.deleteProduct(id, token);
-        return res
-    })
+        return res;
+    });
     const fetchProductAll = async () => {
         const res = await ProductService.getAllProduct();
         return res;
@@ -153,15 +160,14 @@ export const ProductManage = () => {
             message.error();
         }
     }, [isSuccessDeleted, isErrorDeleted]);
-    const handleCloseDrawer = () => {
-        setIsOpenDrawer(false);
-    };
+
     const onFinish = () => {
         mutation.mutate(stateProduct, {
             onSettled: () => {
                 queryProduct.refetch();
             },
         });
+        setStateProduct(initProductState);
     };
     const onFinishUpdate = () => {
         updateMutation.mutate(
@@ -178,20 +184,26 @@ export const ProductManage = () => {
         );
         setIsOpenDrawer(false);
     };
-    const onFinishDelete = ()=>{
-        deleteMutation.mutate({id :rowSelected ,token:user?.access_token}, {
-            onSettled: () => {
-                queryProduct.refetch();
-            },
-        });
-        setShowDelete(false)
-    }
-    const resetProductState = () => {
-        setStateProduct(initProductState);
+    const onFinishDelete = () => {
+        deleteMutation.mutate(
+            { id: rowSelected, token: user?.access_token },
+            {
+                onSettled: () => {
+                    queryProduct.refetch();
+                },
+            }
+        );
+        setShowDelete(false);
+    };
+    const handleCloseDrawer = () => {
+        setIsOpenDrawer(false);
+        setStateProductDetails(initProductDetailState);
+        setRowSelected("");
     };
     const handleClose = () => {
-        resetProductState();
+        setStateProduct(initProductState);
         setShow(false);
+        setRowSelected("");
     };
     const handleCloseDelete = () => {
         setShowDelete(false);
@@ -226,6 +238,7 @@ export const ProductManage = () => {
     const handleUpdateDetails = () => {
         setIsOpenDrawer(true);
     };
+
     const handleDelete = () => {
         setShowDelete(true);
     };
@@ -252,18 +265,47 @@ export const ProductManage = () => {
         queryFn: fetchProductAll,
     });
     const { isLoading: isLoadingProducts, data: products } = queryProduct;
+
     const columns = [
         {
             title: "Name",
             dataIndex: "name",
+            filters: [
+                {
+                    text: "Audi",
+                    value: "Audi",
+                },
+                {
+                    text: "Carrera",
+                    value: "Carrera",
+                },
+            ],
+            filterMode: "tree",
+            filterSearch: true,
+            onFilter: (value, record) => record.name.includes(value),
+            width: "30%",
         },
         {
             title: "Type",
             dataIndex: "type",
+            filters: [
+                {
+                    text: "Car",
+                    value: "Car",
+                },
+                {
+                    text: "Equipment",
+                    value: "Equipment",
+                },
+            ],
+            filterMode: "tree",
+            filterSearch: true,
+            onFilter: (value, record) => record.type.includes(value),
         },
         {
             title: "Price",
             dataIndex: "price",
+            sorter: (a, b) => a.price - b.price,
         },
         {
             title: "Action",
@@ -271,7 +313,7 @@ export const ProductManage = () => {
             render: renderAction,
         },
     ];
-    const dataTable =
+    const dataTable = 
         products?.data?.length &&
         products?.data?.map((product) => {
             return {
@@ -295,6 +337,7 @@ export const ProductManage = () => {
                     <PlusOutlined style={{ fontSize: "45px" }} />
                 </Button>
             </div>
+            {/* Table Component */}
             <div>
                 <TableComponent
                     products={products?.data}
@@ -312,178 +355,178 @@ export const ProductManage = () => {
             </div>
             {/* Modal */}
             <div>
-                <Modal show={show} onHide={handleClose}>
+                <Modal forcerender="true" show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
                         <Modal.Title>Add new product</Modal.Title>
                     </Modal.Header>
                     <Modal.Body style={{ paddingLeft: "50px" }}>
-                        {isPending ? (
-                            <Loading />
-                        ) : (
-                            <Form>
-                                <Form.Group as={Row} className="mb-3">
-                                    <Form.Label column sm="4">
-                                        Name
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Enter product name"
-                                            value={stateProduct.name}
-                                            name="name"
-                                            onChange={handleOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
+                        <Form>
+                            <Form.Group as={Row} className="mb-3">
+                                <Form.Label column sm="4">
+                                    Name
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter product name"
+                                        value={stateProduct.name}
+                                        name="name"
+                                        onChange={handleOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
 
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="type">
-                                    <Form.Label column sm="4">
-                                        Type
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Enter product type"
-                                            value={stateProduct.type}
-                                            name="type"
-                                            onChange={handleOnChange}
-                                            required
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="type">
+                                <Form.Label column sm="4">
+                                    Type
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter product type"
+                                        value={stateProduct.type}
+                                        name="type"
+                                        onChange={handleOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="price">
+                                <Form.Label column sm="4">
+                                    Price
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="number"
+                                        placeholder="Enter price"
+                                        value={stateProduct.price}
+                                        name="price"
+                                        onChange={handleOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="rating">
+                                <Form.Label column sm="4">
+                                    Rating
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="number"
+                                        placeholder="Enter rating"
+                                        value={stateProduct.rating}
+                                        name="rating"
+                                        onChange={handleOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="countInStock">
+                                <Form.Label column sm="4">
+                                    CountInStock
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="number"
+                                        placeholder="Enter the remains"
+                                        value={stateProduct.countInStock}
+                                        name="countInStock"
+                                        onChange={handleOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="description">
+                                <Form.Label column sm="4">
+                                    Description
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter the description"
+                                        value={stateProduct.description}
+                                        name="description"
+                                        onChange={handleOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="discount">
+                                <Form.Label column sm="4">
+                                    Discount
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="number"
+                                        placeholder="Enter the discount"
+                                        value={stateProduct.discount}
+                                        name="discount"
+                                        onChange={handleOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="image">
+                                <Form.Label column sm="4">
+                                    Image
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Upload
+                                        onChange={handleImageChange}
+                                        maxCount={1}>
+                                        <Button icon={<UploadOutlined />}>
+                                            Upload file
+                                        </Button>
+                                    </Upload>
+                                    {stateProduct?.image && (
+                                        <img
+                                            src={stateProduct?.image}
+                                            style={{
+                                                height: "60px",
+                                                width: "60px",
+                                                borderRadius: "50%",
+                                                objectFit: "cover",
+                                            }}
+                                            alt="avatar"
                                         />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="price">
-                                    <Form.Label column sm="4">
-                                        Price
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="number"
-                                            placeholder="Enter price"
-                                            value={stateProduct.price}
-                                            name="price"
-                                            onChange={handleOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="rating">
-                                    <Form.Label column sm="4">
-                                        Rating
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="number"
-                                            placeholder="Enter rating"
-                                            value={stateProduct.rating}
-                                            name="rating"
-                                            onChange={handleOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="countInStock">
-                                    <Form.Label column sm="4">
-                                        CountInStock
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="number"
-                                            placeholder="Enter the remains"
-                                            value={stateProduct.countInStock}
-                                            name="countInStock"
-                                            onChange={handleOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="description">
-                                    <Form.Label column sm="4">
-                                        Description
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Enter the description"
-                                            value={stateProduct.description}
-                                            name="description"
-                                            onChange={handleOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="discount">
-                                    <Form.Label column sm="4">
-                                        Discount
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="number"
-                                            placeholder="Enter the discount"
-                                            value={stateProduct.discount}
-                                            name="discount"
-                                            onChange={handleOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="image">
-                                    <Form.Label column sm="4">
-                                        Image
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Upload
-                                            onChange={handleImageChange}
-                                            maxCount={1}>
-                                            <Button icon={<UploadOutlined />}>
-                                                Upload file
-                                            </Button>
-                                        </Upload>
-                                        {stateProduct?.image && (
-                                            <img
-                                                src={stateProduct?.image}
-                                                style={{
-                                                    height: "60px",
-                                                    width: "60px",
-                                                    borderRadius: "50%",
-                                                    objectFit: "cover",
-                                                }}
-                                                alt="avatar"
-                                            />
-                                        )}
-                                    </Col>
-                                </Form.Group>
-                            </Form>
-                        )}
+                                    )}
+                                </Col>
+                            </Form.Group>
+                        </Form>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
                             Cancel
                         </Button>
-                        <Button variant="primary" onClick={onFinish}>
-                            Add
-                        </Button>
+                        {isPending ? (
+                            <Loading />
+                        ) : (
+                            <Button variant="primary" onClick={onFinish}>
+                                Add
+                            </Button>
+                        )}
                     </Modal.Footer>
                 </Modal>
             </div>
@@ -492,185 +535,180 @@ export const ProductManage = () => {
                 <DrawerComponent
                     title="Product Details"
                     isOpen={isOpenDrawer}
-                    onClose={() => setIsOpenDrawer(false)}>
+                    onClose={() => handleCloseDrawer()}>
                     <Modal.Body style={{ paddingLeft: "100px" }}>
-                        {isPendingUpdate || isPendingUpdated ? (
-                            <Loading />
-                        ) : (
-                            <Form>
-                                <Form.Group as={Row} className="mb-3">
-                                    <Form.Label column sm="4">
-                                        Name
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Enter product name"
-                                            value={stateProductDetails.name}
-                                            name="name"
-                                            onChange={handleDetailOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
+                        <Form>
+                            <Form.Group as={Row} className="mb-3">
+                                <Form.Label column sm="4">
+                                    Name
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter product name"
+                                        value={stateProductDetails.name}
+                                        name="name"
+                                        onChange={handleDetailOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
 
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="type">
-                                    <Form.Label column sm="4">
-                                        Type
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Enter product type"
-                                            value={stateProductDetails.type}
-                                            name="type"
-                                            onChange={handleDetailOnChange}
-                                            required
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="type">
+                                <Form.Label column sm="4">
+                                    Type
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter product type"
+                                        value={stateProductDetails.type}
+                                        name="type"
+                                        onChange={handleDetailOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="price">
+                                <Form.Label column sm="4">
+                                    Price
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="number"
+                                        placeholder="Enter price"
+                                        value={stateProductDetails.price}
+                                        name="price"
+                                        onChange={handleDetailOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="rating">
+                                <Form.Label column sm="4">
+                                    Rating
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="number"
+                                        placeholder="Enter rating"
+                                        value={stateProductDetails.rating}
+                                        name="rating"
+                                        onChange={handleDetailOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="countInStock">
+                                <Form.Label column sm="4">
+                                    CountInStock
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="number"
+                                        placeholder="Enter the remains"
+                                        value={stateProductDetails.countInStock}
+                                        name="countInStock"
+                                        onChange={handleDetailOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="description">
+                                <Form.Label column sm="4">
+                                    Description
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter the description"
+                                        value={stateProductDetails.description}
+                                        name="description"
+                                        onChange={handleDetailOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="discount">
+                                <Form.Label column sm="4">
+                                    Discount
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Form.Control
+                                        type="number"
+                                        placeholder="Enter the discount"
+                                        value={stateProductDetails.discount}
+                                        name="discount"
+                                        onChange={handleDetailOnChange}
+                                        required
+                                    />
+                                </Col>
+                            </Form.Group>
+                            <Form.Group
+                                as={Row}
+                                className="mb-3"
+                                controlId="image">
+                                <Form.Label column sm="4">
+                                    Image
+                                </Form.Label>
+                                <Col sm="8">
+                                    <Upload
+                                        onChange={handleDetailImageChange}
+                                        maxCount={1}>
+                                        <Button icon={<UploadOutlined />}>
+                                            Upload file
+                                        </Button>
+                                    </Upload>
+                                    {stateProduct?.image && (
+                                        <img
+                                            src={stateProduct?.image}
+                                            style={{
+                                                height: "60px",
+                                                width: "60px",
+                                                borderRadius: "50%",
+                                                objectFit: "cover",
+                                            }}
+                                            alt="avatar"
                                         />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="price">
-                                    <Form.Label column sm="4">
-                                        Price
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="number"
-                                            placeholder="Enter price"
-                                            value={stateProductDetails.price}
-                                            name="price"
-                                            onChange={handleDetailOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="rating">
-                                    <Form.Label column sm="4">
-                                        Rating
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="number"
-                                            placeholder="Enter rating"
-                                            value={stateProductDetails.rating}
-                                            name="rating"
-                                            onChange={handleDetailOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="countInStock">
-                                    <Form.Label column sm="4">
-                                        CountInStock
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="number"
-                                            placeholder="Enter the remains"
-                                            value={
-                                                stateProductDetails.countInStock
-                                            }
-                                            name="countInStock"
-                                            onChange={handleDetailOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="description">
-                                    <Form.Label column sm="4">
-                                        Description
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Enter the description"
-                                            value={
-                                                stateProductDetails.description
-                                            }
-                                            name="description"
-                                            onChange={handleDetailOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="discount">
-                                    <Form.Label column sm="4">
-                                        Discount
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Form.Control
-                                            type="number"
-                                            placeholder="Enter the discount"
-                                            value={stateProductDetails.discount}
-                                            name="discount"
-                                            onChange={handleDetailOnChange}
-                                            required
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group
-                                    as={Row}
-                                    className="mb-3"
-                                    controlId="image">
-                                    <Form.Label column sm="4">
-                                        Image
-                                    </Form.Label>
-                                    <Col sm="8">
-                                        <Upload
-                                            onChange={handleDetailImageChange}
-                                            maxCount={1}>
-                                            <Button icon={<UploadOutlined />}>
-                                                Upload file
-                                            </Button>
-                                        </Upload>
-                                        {stateProduct?.image && (
-                                            <img
-                                                src={stateProduct?.image}
-                                                style={{
-                                                    height: "60px",
-                                                    width: "60px",
-                                                    borderRadius: "50%",
-                                                    objectFit: "cover",
-                                                }}
-                                                alt="avatar"
-                                            />
-                                        )}
-                                    </Col>
-                                </Form.Group>
-                            </Form>
-                        )}
+                                    )}
+                                </Col>
+                            </Form.Group>
+                        </Form>
                     </Modal.Body>
                     <Modal.Footer style={{ display: "flex", gap: "10px" }}>
                         <Button variant="secondary" onClick={handleCloseDrawer}>
                             Cancel
                         </Button>
-                        <Button variant="primary" onClick={onFinishUpdate}>
-                            Update
-                        </Button>
+                        {isPendingUpdate || isPendingUpdated ? (
+                            <Loading />
+                        ) : (
+                            <Button variant="primary" onClick={onFinishUpdate}>
+                                Update
+                            </Button>
+                        )}
                     </Modal.Footer>
                 </DrawerComponent>
             </div>
-            {/* delete modal */}
+            {/* Delete modal */}
             <>
-                return (
                 <div style={{ display: "block", position: "initial" }}>
                     <Modal show={showDelete} onHide={handleCloseDelete}>
                         <Modal.Body>
@@ -681,7 +719,15 @@ export const ProductManage = () => {
                         </Modal.Body>
 
                         <Modal.Footer>
-                            <Button variant="danger" onClick={onFinishDelete}>Delete</Button>
+                            {isPendingDeleted ? (
+                                <Loading />
+                            ) : (
+                                <Button
+                                    variant="danger"
+                                    onClick={onFinishDelete}>
+                                    Delete
+                                </Button>
+                            )}
                             <Button
                                 variant="secondary"
                                 onClick={handleCloseDelete}>
@@ -690,7 +736,6 @@ export const ProductManage = () => {
                         </Modal.Footer>
                     </Modal>
                 </div>
-                );
             </>
         </>
     );

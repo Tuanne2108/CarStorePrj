@@ -1,9 +1,9 @@
 import axios from "axios";
 export const axiosJwt = axios.create();
 
-export const getAllProduct = async () => {
+export const getAllProduct = async (page, limit) => {
     const res = await axios.get(
-        `http://localhost:3001/product/get-all-product`
+        `http://localhost:3001/product/get-all-product`, page, limit
     );
     return res.data;
 };
