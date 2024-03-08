@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Pagination } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { PlusOutlined } from "@ant-design/icons";
 import TableComponent from "../Table";
 import Modal from "react-bootstrap/Modal";

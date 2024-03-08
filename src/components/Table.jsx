@@ -25,7 +25,7 @@ const TableComponent = (props) => {
             style={{
                 marginTop: "15px",
                 border: "1px solid #c0c0c0",
-                width: "100vh",
+                width: "150vh",
             }}>
             {isLoading ? (
                 <Loading />
