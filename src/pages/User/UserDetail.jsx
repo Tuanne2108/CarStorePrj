@@ -26,6 +26,10 @@ export const UserDetail = () => {
     });
     const { isPending, isSuccess, isError } = updateUserMutation;
 
+    const handleGetUserDetails = async (id, token) => {
+        const res = await UserService.getUserDetails(id, token);
+        dispatch(updateUser({ ...res?.data, access_token: token }));
+    };
     useEffect(() => {
         setEmail(user?.email);
         setName(user?.name);
@@ -40,12 +44,8 @@ export const UserDetail = () => {
         } else if (isError) {
             message.error();
         }
-    }, [isSuccess, isError]);
+    }, [isSuccess, isError, user?.id, user?.access_token]);
 
-    const handleGetUserDetails = async (id, token) => {
-        const res = await UserService.getUserDetails(id, token);
-        dispatch(updateUser({ ...res?.data, access_token: token }));
-    };
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
     };

@@ -17,7 +17,6 @@ function App() {
     const user = useSelector((state) => state.user);
 
     useEffect(() => {
-
         const { storageData, decoded } = handleDecoded();
         if (decoded?.id) {
             handleGetUserDetails(decoded?.id, storageData);
@@ -63,8 +62,7 @@ function App() {
     };
 
     return (
-        <div>
-            
+        <div>     
                 <Router>
                     <Routes>
                         {routes.map((route) => {

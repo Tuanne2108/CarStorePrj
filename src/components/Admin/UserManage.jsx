@@ -19,6 +19,7 @@ import DrawerComponent from "../Drawer";
 
 export const UserManage = () => {
     const [showDelete, setShowDelete] = useState(false);
+    const [showDeleteMany, setShowDeleteMany] = useState(false);
     const [rowSelected, setRowSelected] = useState("");
     const [isOpenDrawer, setIsOpenDrawer] = useState(false);
     const user = useSelector((state) => state?.user);
@@ -45,6 +46,13 @@ export const UserManage = () => {
             [e.target.name]: e.target.value,
         });
     };
+    const handleCheckbox = (e) => {
+        const isAdminChecked = e.target.checked;
+        setStateUserDetails({
+            ...stateUserDetails,
+            isAdmin: isAdminChecked,
+        });
+    };
     const handleDetailImageChange = async ({ fileList }) => {
         if (fileList.length > 0) {
             const file = fileList[0];
@@ -60,13 +68,18 @@ export const UserManage = () => {
 
     const updateMutation = useMutationHooks((data) => {
         const { id, token, ...rests } = data;
-
-        const res = UserService.updateUser(id, token, { ...rests });
+        const res = UserService.updateUser(id, { ...rests }, token);
         return res;
     });
     const deleteMutation = useMutationHooks((data) => {
         const { id, token } = data;
         const res = UserService.deleteUser(id, token);
+        return res;
+    });
+    const deleteManyMutation = useMutationHooks((data) => {
+        const { token, ...ids } = data;
+        console.log('data', data)
+        const res = UserService.deleteManyUser(ids, token);
         return res;
     });
     const fetchUserAll = async () => {
@@ -128,6 +141,17 @@ export const UserManage = () => {
         );
         setShowDelete(false);
     };
+    const onFinishDeleteMany = (ids) => {
+        deleteManyMutation.mutate(
+            { ids: ids, token: user?.access_token },
+            {
+                onSettled: () => {
+                    queryUser.refetch();
+                },
+            }
+        );
+        setShowDeleteMany(false);
+    };
     const handleCloseDrawer = () => {
         setIsOpenDrawer(false);
         setStateUserDetails(initUserDetailState);
@@ -135,6 +159,9 @@ export const UserManage = () => {
     };
     const handleCloseDelete = () => {
         setShowDelete(false);
+    };
+    const handleCloseDeleteMany = () => {
+        setShowDeleteMany(false);
     };
 
     // Table
@@ -167,6 +194,9 @@ export const UserManage = () => {
 
     const handleDelete = () => {
         setShowDelete(true);
+    };
+    const handleDeleteManyUser = () => {
+        setShowDeleteMany(true);
     };
     const renderAction = () => {
         return (
@@ -252,6 +282,7 @@ export const UserManage = () => {
                     isLoading={isLoadingUsers}
                     columns={columns}
                     data={dataTable}
+                    handleDeleteMany={onFinishDeleteMany}
                     onRow={(record, rowIndex) => {
                         return {
                             onClick: (event) => {
@@ -306,24 +337,6 @@ export const UserManage = () => {
                             <Form.Group
                                 as={Row}
                                 className="mb-3"
-                                controlId="password">
-                                <Form.Label column sm="4">
-                                    Password
-                                </Form.Label>
-                                <Col sm="8">
-                                    <Form.Control
-                                        type="number"
-                                        placeholder="Enter password"
-                                        value={stateUserDetails.password}
-                                        name="password"
-                                        onChange={handleDetailOnChange}
-                                        required
-                                    />
-                                </Col>
-                            </Form.Group>
-                            <Form.Group
-                                as={Row}
-                                className="mb-3"
                                 controlId="phone">
                                 <Form.Label column sm="4">
                                     Phone
@@ -346,7 +359,7 @@ export const UserManage = () => {
                                         id="isAdmin"
                                         label="Is admin?"
                                         value={stateUserDetails.isAdmin}
-                                        onChange={handleDetailOnChange}
+                                        onChange={handleCheckbox}
                                     />
                                 </div>
                             </Form>
@@ -417,6 +430,17 @@ export const UserManage = () => {
                             Cancel
                         </Button>
                     </Modal.Footer>
+                </Modal>
+            </div>
+            {/* Delete many modal */}
+            <div style={{ display: "block", position: "initial" }}>
+                <Modal show={showDeleteMany} onHide={handleCloseDeleteMany}>
+                    <Modal.Body>
+                        <p>
+                            Are you sure to delele these? This action cannot be
+                            undone.
+                        </p>
+                    </Modal.Body>
                 </Modal>
             </div>
         </>

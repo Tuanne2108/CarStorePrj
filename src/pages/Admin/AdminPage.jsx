@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { UserOutlined, AppstoreOutlined } from "@ant-design/icons";
-import { Menu, Switch } from "antd";
+import { Menu } from "antd";
 import { Header } from "../../components/Header";
 import { UserManage } from "../../components/Admin/UserManage";
 import { ProductManage } from "../../components/Admin/ProductManage";

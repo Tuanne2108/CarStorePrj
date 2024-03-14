@@ -31,7 +31,6 @@ export const Home = () => {
         retry: 3,
         retryDelay: 1000,
     });
-    console.log("data", products);
     return (
         <>
             <div style={{ padding: "0 100px", background: "#f8f5f5" }}>

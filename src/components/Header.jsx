@@ -14,16 +14,20 @@ import * as UserService from "../services/UserService";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../redux/slides/userSlice";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "./Loading";
 
 export const Header = ({ isHidden = false }) => {
     const user = useSelector((state) => state.user);
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [userAvatar, setUserAvatar] = useState("");
+    const [isPending, setIsPending] = useState(false);
     const dispatch = useDispatch();
     const handleLogout = async () => {
+        setIsPending(true);
         await UserService.logOutUser();
         dispatch(resetUser());
+        setIsPending(false);
     };
     const handleUserInfo = async () => {
         navigate("/user-detail");
@@ -64,7 +68,7 @@ export const Header = ({ isHidden = false }) => {
                         navbarScroll
                         id="brandDropdown">
                         {isHidden ? (
-                            <></> 
+                            <></>
                         ) : (
                             <>
                                 <box-icon type="solid" name="widget"></box-icon>
@@ -122,7 +126,9 @@ export const Header = ({ isHidden = false }) => {
                             </div>
                         )}
                         <div className="user">
-                            {user?.name ? (
+                            {isPending ? (
+                                <Loading />
+                            ) : user?.name ? (
                                 <Space wrap>
                                     <Popover content={content} trigger="click">
                                         <div
@@ -143,12 +149,14 @@ export const Header = ({ isHidden = false }) => {
                                                     }}
                                                 />
                                             ) : (
-                                                <box-icon
-                                                    type="solid"
-                                                    name="user-circle"></box-icon>
+                                                <div style={{paddingTop:'7px'}}>
+                                                   <box-icon type='solid' name='user'></box-icon>
+                                                </div>
                                             )}
                                             <span
-                                                style={{ lineHeight: "40px" }}>
+                                                style={{
+                                                    lineHeight: "40px",
+                                                }}>
                                                 {user.name}
                                             </span>
                                         </div>

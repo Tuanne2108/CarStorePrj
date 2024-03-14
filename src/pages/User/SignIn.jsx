@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -8,11 +8,11 @@ import { Loading } from "../../components/Loading";
 import * as message from "../../components/Message";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { useDispatch } from 'react-redux'
+import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slides/userSlice";
 
 export const SignInForm = () => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
@@ -32,36 +32,42 @@ export const SignInForm = () => {
     const signInMutation = useMutationHooks((data) =>
         UserService.signInUser(data)
     );
-    const { isPending } = signInMutation;
-    const handleSignIn = async () => {
-        try {
-            const response = await signInMutation.mutateAsync({
-                email,
-                password,
-            });
-
-            if (response.status === "ERR") {
-                message.error(response.message);
-            } else {
-                message.success();
-                navigate("/");
-                localStorage.setItem("access_token", JSON.stringify(response?.access_token));
-                const decoded = jwtDecode(response?.access_token);
-                console.log("decode", decoded);
-                if (decoded?.id) {
-                    handleGetUserDetails(decoded?.id, response?.access_token);
-                }
-            }
-        } catch (error) {
-            message.error(
-                "An error occurred during signup. Please try again later."
+    const { isSuccess, isError, isPending, data } = signInMutation;
+    useEffect(() => {
+        if (isSuccess) {
+            message.success()
+            navigate("/");
+            localStorage.setItem(
+                "access_token",
+                JSON.stringify(data?.access_token)
             );
+            const decoded = jwtDecode(data?.access_token);
+            console.log("decode", decoded);
+            if (decoded?.id) {
+                handleGetUserDetails(decoded?.id, data?.access_token);
+            }
         }
-    };
+        else if(isError){
+            message.error()
+        }
+    }, [isSuccess]);
+
+    
     const handleGetUserDetails = async (id, token) => {
         const res = await UserService.getUserDetails(id, token);
-        dispatch(updateUser({...res?.data, access_token:token}))
+        dispatch(updateUser({ ...res?.data, access_token: token }));
     };
+    const handleSignIn = async() => {
+        const res = await signInMutation.mutateAsync({
+            email,
+            password,
+        });
+        if(res.status === 'ERR'){
+            message.error(res.message)
+        }
+        return res;
+    };
+
     return (
         <div className="signIn">
             <div className="wrapper">
