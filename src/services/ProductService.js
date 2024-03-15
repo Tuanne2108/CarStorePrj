@@ -3,7 +3,9 @@ export const axiosJwt = axios.create();
 
 export const getAllProduct = async (page, limit) => {
     const res = await axios.get(
-        `http://localhost:3000/product/get-all-product`, page, limit
+        `http://localhost:3000/product/get-all-product`,
+        page,
+        limit
     );
     return res.data;
 };
@@ -35,6 +37,19 @@ export const updateProduct = async (id, access_token, data) => {
 export const deleteProduct = async (id, access_token) => {
     const res = await axiosJwt.delete(
         `http://localhost:3000/product/delete-product/${id}`,
+        {
+            headers: {
+                token: `Bearer ${access_token}`,
+            },
+        }
+    );
+    return res.data;
+};
+
+export const deleteManyProducts = async (data, access_token) => {
+    const res = await axiosJwt.post(
+        `http://localhost:3000/product/delete-many-product`,
+        data,
         {
             headers: {
                 token: `Bearer ${access_token}`,

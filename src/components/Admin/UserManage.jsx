@@ -78,7 +78,6 @@ export const UserManage = () => {
     });
     const deleteManyMutation = useMutationHooks((data) => {
         const { token, ...ids } = data;
-        console.log('data', data)
         const res = UserService.deleteManyUser(ids, token);
         return res;
     });
@@ -98,6 +97,11 @@ export const UserManage = () => {
         isSuccess: isSuccessDeleted,
         isError: isErrorDeleted,
     } = deleteMutation;
+    const {
+        data: manyDataDeleted,
+        isSuccess: isSuccessManyDeleted,
+        isError: isErrorManyDeleted,
+    } = deleteManyMutation;
     useEffect(() => {
         if (isSuccessUpdated && dataUpdated?.status === "OK") {
             message.success();
@@ -114,6 +118,13 @@ export const UserManage = () => {
             message.error();
         }
     }, [isSuccessDeleted, isErrorDeleted]);
+    useEffect(() => {
+        if (isSuccessManyDeleted && manyDataDeleted?.status === "OK") {
+            message.success();
+        } else if (isErrorManyDeleted) {
+            message.error();
+        }
+    }, [isSuccessManyDeleted, isErrorManyDeleted]);
 
     const onFinishUpdate = () => {
         updateMutation.mutate(
@@ -150,7 +161,6 @@ export const UserManage = () => {
                 },
             }
         );
-        setShowDeleteMany(false);
     };
     const handleCloseDrawer = () => {
         setIsOpenDrawer(false);
@@ -159,9 +169,6 @@ export const UserManage = () => {
     };
     const handleCloseDelete = () => {
         setShowDelete(false);
-    };
-    const handleCloseDeleteMany = () => {
-        setShowDeleteMany(false);
     };
 
     // Table
@@ -194,9 +201,6 @@ export const UserManage = () => {
 
     const handleDelete = () => {
         setShowDelete(true);
-    };
-    const handleDeleteManyUser = () => {
-        setShowDeleteMany(true);
     };
     const renderAction = () => {
         return (
@@ -432,17 +436,7 @@ export const UserManage = () => {
                     </Modal.Footer>
                 </Modal>
             </div>
-            {/* Delete many modal */}
-            <div style={{ display: "block", position: "initial" }}>
-                <Modal show={showDeleteMany} onHide={handleCloseDeleteMany}>
-                    <Modal.Body>
-                        <p>
-                            Are you sure to delele these? This action cannot be
-                            undone.
-                        </p>
-                    </Modal.Body>
-                </Modal>
-            </div>
+            
         </>
     );
 };

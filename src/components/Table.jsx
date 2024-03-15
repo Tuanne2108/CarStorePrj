@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Table } from "antd";
+import { Table, Modal } from "antd"; // Import Modal from antd
 import { Loading } from "./Loading";
 import { Button } from "react-bootstrap";
 
 const TableComponent = (props) => {
     const [rowSelectedKeys, setRowSelectedKeys] = useState([]);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // State variable for delete confirmation modal
+
     const {
         selectionType = "checkbox",
         isLoading = false,
@@ -18,20 +20,36 @@ const TableComponent = (props) => {
             setRowSelectedKeys(selectedRowKeys);
         },
     };
+
     const handleDeleteAll = () => {
+        setShowDeleteConfirmation(true); 
+    };
+
+    const handleConfirmDelete = () => {
         handleDeleteMany(rowSelectedKeys);
+        setShowDeleteConfirmation(false); 
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeleteConfirmation(false); 
     };
 
     return (
         <div>
             {rowSelectedKeys.length > 0 && (
-                <div style={{ paddingTop: "10px" }}>
-                    <Button
-                        style={{ width: "30vh" }}
-                        variant="danger"
-                        onClick={handleDeleteAll}>
-                        Delete
-                    </Button>
+                <div>
+                    {isLoading ? (
+                        <Loading />
+                    ) : (
+                        <div style={{ paddingTop: "10px" }}>
+                            <Button
+                                style={{ width: "30vh" }}
+                                variant="danger"
+                                onClick={handleDeleteAll}>
+                                Delete All 
+                            </Button>
+                        </div>
+                    )}
                 </div>
             )}
             <div
@@ -54,6 +72,16 @@ const TableComponent = (props) => {
                     />
                 )}
             </div>
+
+            {/* Delete confirmation modal */}
+            <Modal
+                title="Confirm Delete"
+                visible={showDeleteConfirmation}
+                onOk={handleConfirmDelete}
+                onCancel={handleCancelDelete}
+            >
+                <p>Are you sure you want to delete these items?</p>
+            </Modal>
         </div>
     );
 };

@@ -119,6 +119,11 @@ export const ProductManage = () => {
         const res = ProductService.deleteProduct(id, token);
         return res;
     });
+    const deleteManyMutation = useMutationHooks((data) => {
+        const { token, ...ids } = data;
+        const res = ProductService.deleteManyProducts(ids, token);
+        return res;
+    });
     const fetchProductAll = async () => {
         const res = await ProductService.getAllProduct();
         return res;
@@ -136,6 +141,11 @@ export const ProductManage = () => {
         isSuccess: isSuccessDeleted,
         isError: isErrorDeleted,
     } = deleteMutation;
+    const {
+        data: manyDataDeleted,
+        isSuccess: isSuccessManyDeleted,
+        isError: isErrorManyDeleted,
+    } = deleteManyMutation;
     useEffect(() => {
         if (isSuccess && data?.status === "OK") {
             message.success();
@@ -160,6 +170,14 @@ export const ProductManage = () => {
             message.error();
         }
     }, [isSuccessDeleted, isErrorDeleted]);
+    useEffect(() => {
+        if (isSuccessManyDeleted && manyDataDeleted?.status === "OK") {
+            message.success();
+        } else if (isErrorManyDeleted) {
+            message.error();
+        }
+    }, [isSuccessManyDeleted, isErrorManyDeleted]);
+
 
     const onFinish = () => {
         mutation.mutate(stateProduct, {
@@ -194,6 +212,16 @@ export const ProductManage = () => {
             }
         );
         setShowDelete(false);
+    };
+    const onFinishDeleteMany = (ids) => {
+        deleteManyMutation.mutate(
+            { ids: ids, token: user?.access_token },
+            {
+                onSettled: () => {
+                    queryProduct.refetch();
+                },
+            }
+        );
     };
     const handleCloseDrawer = () => {
         setIsOpenDrawer(false);
@@ -344,6 +372,7 @@ export const ProductManage = () => {
                     isLoading={isLoadingProducts}
                     columns={columns}
                     data={dataTable}
+                    handleDeleteMany={onFinishDeleteMany}
                     onRow={(record, rowIndex) => {
                         return {
                             onClick: (event) => {
