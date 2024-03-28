@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { resetUser } from "../redux/slides/userSlice";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "./Loading";
+import { searchProduct } from "../redux/slides/productSlice";
 
 export const Header = ({ isHidden = false }) => {
     const user = useSelector((state) => state.user);
@@ -54,6 +55,9 @@ export const Header = ({ isHidden = false }) => {
             </p>
         </div>
     );
+    const handleSearchProduct = (e) => {
+        dispatch(searchProduct(e.target.value));
+    };
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid className="navbar">
@@ -95,6 +99,7 @@ export const Header = ({ isHidden = false }) => {
                                 placeholder="Search product..."
                                 aria-label="Search products"
                                 aria-describedby="basic-addon2"
+                                onChange={handleSearchProduct}
                             />
                             <Button
                                 variant="outline-secondary"
@@ -149,8 +154,13 @@ export const Header = ({ isHidden = false }) => {
                                                     }}
                                                 />
                                             ) : (
-                                                <div style={{paddingTop:'7px'}}>
-                                                   <box-icon type='solid' name='user'></box-icon>
+                                                <div
+                                                    style={{
+                                                        paddingTop: "7px",
+                                                    }}>
+                                                    <box-icon
+                                                        type="solid"
+                                                        name="user"></box-icon>
                                                 </div>
                                             )}
                                             <span

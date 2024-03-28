@@ -1,12 +1,21 @@
 import axios from "axios";
 export const axiosJwt = axios.create();
 
-export const getAllProduct = async (page, limit) => {
-    const res = await axios.get(
-        `http://localhost:3000/product/get-all-product`,
-        page,
-        limit
-    );
+export const getAllProduct = async (search, page, limit) => {
+    let res = {};
+    if (search.length > 0) {
+        res = await axios.get(
+            `http://localhost:3000/product/get-all-product?filter=name&filter=${search}`,
+            page,
+            limit
+        );
+    } else {
+        res = await axios.get(
+            `http://localhost:3000/product/get-all-product`,
+            page,
+            limit
+        );
+    }
     return res.data;
 };
 export const addProduct = async (data) => {

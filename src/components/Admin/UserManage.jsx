@@ -33,13 +33,6 @@ export const UserManage = () => {
     };
     const [stateUserDetails, setStateUserDetails] =
         useState(initUserDetailState);
-    const [stateUser, setStateUser] = useState({
-        name: "",
-        phone: "",
-        email: "",
-        isAdmin: false,
-        avatar: "",
-    });
     const handleDetailOnChange = (e) => {
         setStateUserDetails({
             ...stateUserDetails,
@@ -179,16 +172,13 @@ export const UserManage = () => {
                 name: res?.data?.name,
                 email: res?.data?.email,
                 phone: res?.data?.phone,
-                price: res?.data?.price,
                 isAdmin: res?.data?.isAdmin,
                 avatar: res?.data?.avatar,
             });
         }
         setIsPendingUpdate(false);
     };
-    useEffect(() => {
-        setStateUser(stateUserDetails);
-    }, [stateUserDetails]);
+
     useEffect(() => {
         if (rowSelected) {
             setIsPendingUpdate(true);
